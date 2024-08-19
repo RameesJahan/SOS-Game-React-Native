@@ -1,50 +1,32 @@
-# Welcome to your Expo app 👋
+# SOS Game
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Welcome to the SOS game! This is a fun and engaging game developed by me. 
 
-## Get started
+## Overview
 
-1. Install dependencies
+SOS is a classic pencil-and-paper game now available on your mobile device. Challenge your friends in this easy-to-learn yet strategic game.
 
-   ```bash
-   npm install
-   ```
 
-2. Start the app
+## Preview
 
-   ```bash
-    npx expo start
-   ```
+Check out the SOS game on the Google Play Store and see what it's all about:
 
-In the output, you'll find options to open the app in a
+[**Download SOS Game**](https://play.google.com/store/apps/details?id=com.kaakkagames.SOSGame) 
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Credits
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+- **Background Image:** Provided by [Freepik](https://www.freepik.com) under a free use license with attribution.
+- **Background Music:** Provided by **Flush Why** under a free use license with attribution.
 
-## Get a fresh project
+## Installation
 
-When you're ready, run:
+1. **Download and Install:** Visit the Google Play Store link provided above.
+2. **Enjoy the Game:** Open the app and start playing!
 
-```bash
-npm run reset-project
-```
+## Contact
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+For any questions or feedback, feel free to reach out to us at rameesjahan37@gmail.com .
 
-## Learn more
+Thank you for downloading and playing SOS!
 
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+---
