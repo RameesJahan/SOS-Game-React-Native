@@ -31,13 +31,25 @@
     "plugins": [
       "expo-router",
       [
-        "expo-font", {
-          "fonts": ["./assets/fonts/Tempus-Sans.ttf"]
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/Tempus-Sans.ttf"
+          ]
         }
       ]
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "35a9cb45-4c0b-4751-84a7-dd364e2701d5"
+      }
+    },
+    "owner": "rameesjahan"
   }
 }
