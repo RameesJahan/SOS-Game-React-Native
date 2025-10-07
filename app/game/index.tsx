@@ -22,11 +22,12 @@ import {
 } from "@/utils/GameLogic";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import SOSPauseMenu, { PauseCloseType } from "@/components/SOSPauseMenu";
 import SOSWinnerDialog, { WinnerCloseType } from "@/components/SOSWinnerDialog";
-
-const _row = 10; //TODO: Make it dynamic
+import SOSSoundButton from "@/components/SOSSoundButton";
+import InAppReview from "react-native-in-app-review";
+import { useSavedState } from "@/hooks/useSavedState";
 
 const getJsonData = (x: string) => {
   return JSON.parse(x);
@@ -41,7 +42,9 @@ const Game = () => {
   const [selected, setSelected] = useState<SOSSlot>(SOSSlot.E);
   const [isGameOver, setIsGameOver] = useState(false);
 
-  const [players, setPlayers] = useState<Array<Player>>(createPlayersArray(playersList));
+  const [players, setPlayers] = useState<Array<Player>>(
+    createPlayersArray(playersList)
+  );
   const [currentTurn, setCurrentTurn] = useState<number>(0);
 
   const [crossedState, setCrossedState] = useState<Array<{
@@ -50,22 +53,26 @@ const Game = () => {
   }> | null>(null);
 
   const [showPause, setShowPause] = useState(false);
+  const [rating, setRating] = useSavedState<string>("RATING", "asked");
 
-  
   useEffect(() => {
-    const backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
-      setShowPause(true)
-      return true;
-    })
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      () => {
+        setShowPause(true);
+        return true;
+      }
+    );
     return () => backHandler.remove();
-
-  }, [])
-  
+  }, []);
 
   useEffect(() => {
     //check if game is over
     if (checkIsGameOver(gameState)) {
-      setIsGameOver(true); 
+      setIsGameOver(true);
+      if(rating === "asked"){
+        setRating("should");
+      }
     }
   }, [gameState]);
 
@@ -134,8 +141,8 @@ const Game = () => {
         router.replace({
           pathname: "/game",
           params: {
-            data
-          }
+            data,
+          },
         });
         break;
       case PauseCloseType.QUIT:
@@ -144,7 +151,7 @@ const Game = () => {
       default:
         break;
     }
-  }
+  };
 
   const handleWinnerClose = (type: WinnerCloseType) => {
     switch (type) {
@@ -155,15 +162,13 @@ const Game = () => {
         router.replace({
           pathname: "/game",
           params: {
-            data
-          }
-        })
+            data,
+          },
+        });
       default:
         break;
     }
-  }
-
-  
+  };
 
   return (
     <ImageBackground
@@ -171,13 +176,10 @@ const Game = () => {
       source={require("@/assets/images/paper-bg.jpg")}
     >
       <SafeAreaView className="flex-1">
-        <View className="flex flex-row justify-end p-4">
+        <View className="flex flex-row items-center justify-end gap-x-[12px] p-4">
+          <SOSSoundButton size={38} />
           <Pressable onPress={() => setShowPause(true)}>
-            <MaterialCommunityIcons
-              name="pause-circle"
-              size={48}
-              color="black"
-            />
+            <Ionicons name="pause-circle-outline" size={48} color="black" />
           </Pressable>
         </View>
         <SOSPlayersList players={players} currentTurn={currentTurn} />
@@ -190,7 +192,11 @@ const Game = () => {
         <SOSSelector selected={selected} onSelect={setSelected} />
       </SafeAreaView>
       <SOSPauseMenu visible={showPause} onClose={handlePauseClose} />
-      <SOSWinnerDialog visible={isGameOver} onClose={handleWinnerClose} winner={getWinners(players).map((player) => player.name)} />
+      <SOSWinnerDialog
+        visible={isGameOver}
+        onClose={handleWinnerClose}
+        winner={getWinners(players).map((player) => player.name)}
+      />
     </ImageBackground>
   );
 };

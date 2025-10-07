@@ -7,20 +7,26 @@ import {
   Share,
   Alert,
 } from "react-native";
-import React, { useEffect, useState } from "react";
-import { router, SplashScreen } from "expo-router";
+import React, { useCallback, useEffect, useState } from "react";
+import { router, SplashScreen, useFocusEffect } from "expo-router";
 
 import IMGPaperBg from "@/assets/images/paper-bg.jpg";
 import SOSHomeLogo from "@/components/SOSHomeLogo";
 import SOSNoPlayersSelector from "@/components/SOSNoPlayersSelector";
 import { PlayerData } from "@/types/types";
 import SOSHomePlayers from "@/components/SOSHomePlayers";
-import SOSHomeRowSelector, { RowSelectorType } from "@/components/SOSHomeRowSelector";
+import SOSHomeRowSelector, {
+  RowSelectorType,
+} from "@/components/SOSHomeRowSelector";
 
 import AnimatedText from "@/components/AnimatedText";
-import { Audio } from "expo-av";
+// import { Audio } from "expo-av";
+import { useAudioPlayer } from "expo-audio";
 import SOSMusicToggle from "@/components/SOSMusicToggle";
 import { useSavedState } from "@/hooks/useSavedState";
+import { useSoundContext } from "@/context/sound-context";
+import SOSSoundButton from "@/components/SOSSoundButton";
+import InAppReview from 'react-native-in-app-review';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -57,12 +63,14 @@ const getMaxRow = () => {
 const MAX_ROW = getMaxRow();
 
 const App = (props: Props) => {
-  const [noRow, setNoRow] = useSavedState<number>("NO_OF_ROW",5);
+  const [noRow, setNoRow] = useSavedState<number>("NO_OF_ROW", 5);
   const [playersList, setPlayersList] = useSavedState<PlayerData[]>(
     "PLAYERS_LIST",
     createPlayersData(2)
   );
-  const [isMusicOn, setIsMusicOn, isLoading] = useSavedState<boolean>("IS_MUSIC", true);
+  const [ rating, setRating] = useSavedState<string>("RATING", "asked");
+  // const [isMusicOn, setIsMusicOn, isLoading] = useSavedState<boolean>("IS_MUSIC", true);
+  const { isSoundOn, setIsSoundOn, isLoading } = useSoundContext();
 
   const handleSelectNoPlayers = (value: number) => {
     setPlayersList(createPlayersData(value + 2));
@@ -89,39 +97,69 @@ const App = (props: Props) => {
     }
   };
 
-  const [bgMusic, setBgMusic] = useState<Audio.Sound>()
-
-  const loadBgMusic = async () => {
-    const { sound } = await Audio.Sound.createAsync(require('@/assets/audios/bg-music.mp3'))
-    setBgMusic(sound)
+  const showRatingDialog = () => {
+    if(InAppReview.isAvailable()){
+      console.log("Rating", rating)
+      Alert.alert(
+        "Rate SOS Game",
+        "If you have any feedback, please rate it on Play Store. It helps us a lot. \nThanks for your support! 🙏🏻",
+        [
+          {
+            text: "Rate Now",
+            onPress: () => {
+              InAppReview.RequestInAppReview();
+            },
+          },
+          {
+            text: "Later",
+            style: "cancel",
+            onPress: () => {
+              setRating("done");
+            },
+          },
+          {
+            text: "No, Thanks",
+            style: "cancel",
+            onPress: () => {
+              setRating("done");
+            },
+          },
+        ]
+      )
+    }
   }
 
-  useEffect(() => {
-    loadBgMusic()
-    return () => {
-      bgMusic?.unloadAsync()
-    }
-  }, []) 
+  // const [bgMusic, setBgMusic] = useState<Audio.Sound>()
+
+  // const loadBgMusic = async () => {
+  //   const { sound } = await Audio.Sound.createAsync()
+  //   setBgMusic(sound)
+  // }
+
+  // useEffect(() => {
+  //   loadBgMusic()
+  //   return () => {
+  //     bgMusic?.unloadAsync()
+  //   }
+  // }, [])
+
+  useFocusEffect(
+    useCallback(() => {
+      if(rating === "should") {
+        showRatingDialog();
+      }
+    }, [rating, showRatingDialog])
+  );
 
   useEffect(() => {
-    if(isMusicOn && !isLoading) {
-      bgMusic?.setIsLoopingAsync(true)
-      bgMusic?.playAsync()
-    } else {
-      bgMusic?.stopAsync()
-    }
-  }, [isMusicOn, isLoading , bgMusic])
-
-  useEffect(() => {
-    if(!isLoading) SplashScreen.hideAsync()
-  }, [isLoading])
+    if (!isLoading) SplashScreen.hideAsync();
+  }, [isLoading]);
 
   const onShare = async () => {
     try {
       const result = await Share.share({
-        title: 'SOS Game',
-        message:
-          `Check out the SOS game on the Google Play Store! 🎮
+        title: "SOS Game",
+        message: `Check out the SOS game on the Google Play Store! 🎮
           \nI’ve been playing this awesome game and thought you might enjoy it too. It’s free and fun—perfect for a quick game session. 
           \nhttps://play.google.com/store/apps/details?id=com.kaakkagames.SOSGame`,
       });
@@ -162,7 +200,13 @@ const App = (props: Props) => {
           noRow={noRow}
           setNoRow={handleSelectRow}
         />
-        <SOSMusicToggle value={isMusicOn} onValueChange={(value) => setIsMusicOn(value)} />
+        <View className="w-full flex flex-row items-center justify-between mt-8 px-1">
+          <Text className="text-2xl " style={{ fontFamily: "Tempus-Sans" }}>
+            Music:
+          </Text>
+          <SOSSoundButton />
+        </View>
+        {/* <SOSMusicToggle value={isSoundOn} onValueChange={(value) => setIsSoundOn(value)} /> */}
         <View className="grow" />
         <View className=" items-center justify-center justify-self-end mb-20">
           <Pressable
@@ -187,20 +231,29 @@ const App = (props: Props) => {
           </Pressable>
         </View>
         <View className="flex flex-row gap-4 w-full mb-4">
-          <Pressable 
+          <Pressable
             className="flex-1 items-center justify-center p-2 rounded-md border"
             onPress={() => router.push("/about")}
           >
-            <Text className="text-2xl text-neutral-950" style={{ fontFamily: "Tempus-Sans" }}>About</Text>
+            <Text
+              className="text-2xl text-neutral-950"
+              style={{ fontFamily: "Tempus-Sans" }}
+            >
+              About
+            </Text>
           </Pressable>
-          <Pressable 
+          <Pressable
             className="flex-1 items-center justify-center p-2 rounded-md border"
             onPress={onShare}
           >
-            <Text className="text-2xl text-neutral-950" style={{ fontFamily: "Tempus-Sans" }}>Share</Text>
+            <Text
+              className="text-2xl text-neutral-950"
+              style={{ fontFamily: "Tempus-Sans" }}
+            >
+              Share
+            </Text>
           </Pressable>
         </View>
-
       </ImageBackground>
     </View>
   );
