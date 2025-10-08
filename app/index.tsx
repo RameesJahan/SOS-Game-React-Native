@@ -26,7 +26,9 @@ import SOSMusicToggle from "@/components/SOSMusicToggle";
 import { useSavedState } from "@/hooks/useSavedState";
 import { useSoundContext } from "@/context/sound-context";
 import SOSSoundButton from "@/components/SOSSoundButton";
-import InAppReview from 'react-native-in-app-review';
+import InAppReview from "react-native-in-app-review";
+import { AIDifficulty } from "@/utils/AILogic";
+import SOSDifficultySelector from "@/components/SOSDifficultySelector";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -68,12 +70,23 @@ const App = (props: Props) => {
     "PLAYERS_LIST",
     createPlayersData(2)
   );
-  const [ rating, setRating] = useSavedState<string>("RATING", "asked");
+  const [rating, setRating] = useSavedState<string>("RATING", "asked");
+  const [difficulty, setDifficulty] = useSavedState<AIDifficulty>(
+    "DIFFICULTY",
+    AIDifficulty.EASY
+  );
   // const [isMusicOn, setIsMusicOn, isLoading] = useSavedState<boolean>("IS_MUSIC", true);
   const { isSoundOn, setIsSoundOn, isLoading } = useSoundContext();
 
   const handleSelectNoPlayers = (value: number) => {
     setPlayersList(createPlayersData(value + 2));
+  };
+
+  const handleAiPlayer = () => {
+    setPlayersList(() => [
+      { name: "You", color: "#dc2626" },
+      { name: "AI", color: "#000000", isAi: true },
+    ]);
   };
 
   const handleOnPlayersNameChange = (value: string, index: number) => {
@@ -98,8 +111,8 @@ const App = (props: Props) => {
   };
 
   const showRatingDialog = () => {
-    if(InAppReview.isAvailable()){
-      console.log("Rating", rating)
+    if (InAppReview.isAvailable()) {
+      console.log("Rating", rating);
       Alert.alert(
         "Rate SOS Game",
         "If you have any feedback, please rate it on Play Store. It helps us a lot. \nThanks for your support! 🙏🏻",
@@ -125,9 +138,9 @@ const App = (props: Props) => {
             },
           },
         ]
-      )
+      );
     }
-  }
+  };
 
   // const [bgMusic, setBgMusic] = useState<Audio.Sound>()
 
@@ -145,7 +158,7 @@ const App = (props: Props) => {
 
   useFocusEffect(
     useCallback(() => {
-      if(rating === "should") {
+      if (rating === "should") {
         showRatingDialog();
       }
     }, [rating, showRatingDialog])
@@ -188,9 +201,20 @@ const App = (props: Props) => {
           <SOSHomeLogo />
         </View>
         <SOSNoPlayersSelector
-          selected={playersList.length - 2}
+          selected={
+            playersList.some((player) => player.isAi)
+              ? -1
+              : playersList.length - 2
+          }
           onSelect={handleSelectNoPlayers}
+          onSelectAi={handleAiPlayer}
         />
+        {playersList.some((player) => player.isAi) && (
+          <SOSDifficultySelector
+            difficulty={difficulty}
+            setDifficulty={setDifficulty}
+          />
+        )}
         <SOSHomePlayers
           players={playersList}
           onChangeText={handleOnPlayersNameChange}
@@ -222,12 +246,12 @@ const App = (props: Props) => {
               });
             }}
           >
-            <AnimatedText
-              innerClass="text-5xl text-neutral-950"
+            <Text
+              className="text-5xl text-neutral-950"
               style={{ fontFamily: "Tempus-Sans" }}
             >
               Start Game
-            </AnimatedText>
+            </Text>
           </Pressable>
         </View>
         <View className="flex flex-row gap-4 w-full mb-4">

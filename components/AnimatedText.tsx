@@ -1,6 +1,6 @@
-import { View, Text, StyleProp, TextStyle } from 'react-native'
-import React, { forwardRef, PropsWithChildren, useEffect } from 'react'
-import Animated, { Easing, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated'
+import React, { PropsWithChildren, useEffect } from 'react'
+import { Text } from 'react-native'
+import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated'
 
 type Props = {
  innerClass?: string

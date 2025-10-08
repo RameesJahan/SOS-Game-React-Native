@@ -27,4 +27,5 @@ export type cell = {
 export type PlayerData = {
   name: string;
   color: string;
+  isAi?: boolean;
 }

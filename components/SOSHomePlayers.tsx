@@ -30,7 +30,7 @@ const SOSHomePlayers = ({ players, onChangeText }: Props) => {
             <View className="flex flex-row items-center justify-between rounded-md border p-2">
 
               <TextInput
-                className="text-xl grow" 
+                className="text-xl grow text-gray-700" 
                 style={{ fontFamily: "Tempus-Sans" }}
                 value={player.name}
                 onChangeText={(text) => onChangeText(text, index)}

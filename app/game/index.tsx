@@ -8,7 +8,14 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import SOSBoard from "@/components/SOSBoard";
-import { cell, GameState, Player, SlotDirection, SOSSlot } from "@/types/types";
+import {
+  cell,
+  GameState,
+  Player,
+  PlayerData,
+  SlotDirection,
+  SOSSlot,
+} from "@/types/types";
 import SOSSelector from "@/components/SOSSelector";
 import SOSPlayersList from "@/components/SOSPlayersList";
 import {
@@ -28,14 +35,19 @@ import SOSWinnerDialog, { WinnerCloseType } from "@/components/SOSWinnerDialog";
 import SOSSoundButton from "@/components/SOSSoundButton";
 import InAppReview from "react-native-in-app-review";
 import { useSavedState } from "@/hooks/useSavedState";
+import { AIDifficulty, getAIMove } from "@/utils/AILogic";
 
-const getJsonData = (x: string) => {
+const getJsonData = <T,>(x: string): T => {
   return JSON.parse(x);
 };
 
 const Game = () => {
   const { data } = useLocalSearchParams();
-  const { noRow, playersList } = getJsonData(data as string);
+  const { noRow, playersList, difficulty } = getJsonData<{
+    noRow: string;
+    playersList: PlayerData[];
+    difficulty: AIDifficulty;
+  }>(data as string);
   const [gameState, setGameState] = useState<GameState>(
     createGameState(Number(noRow))
   );
@@ -67,14 +79,17 @@ const Game = () => {
   }, []);
 
   useEffect(() => {
+    console.log("gameState");
     //check if game is over
     if (checkIsGameOver(gameState)) {
       setIsGameOver(true);
-      if(rating === "asked"){
+      if (rating === "asked") {
         setRating("should");
       }
     }
   }, [gameState]);
+
+  console.log("Players:", playersList);
 
   const updateCrossedState = (cell: cell, dir: SlotDirection) => {
     // updating the state of strikes
@@ -94,10 +109,11 @@ const Game = () => {
     });
   };
 
-  const handleCellPress = (rowIndex: number, itemIndex: number) => {
+  const handleCellPress = (rowIndex: number, itemIndex: number, slot?: SOSSlot) => {
     if (gameState[rowIndex][itemIndex] === SOSSlot.E) {
       //if it's a empty cell
-      if (selected == SOSSlot.E) {
+      console.log("Selected:", selected);
+      if (!slot && selected == SOSSlot.E) {
         //if it's not selected
         alert("Please select S or O");
         return;
@@ -105,7 +121,7 @@ const Game = () => {
 
       //check if it's SOS
       const { points, pos } = checkSOS(
-        selected,
+        slot || selected,
         rowIndex,
         itemIndex,
         gameState
@@ -124,13 +140,40 @@ const Game = () => {
       //update game state
       setGameState((prevGameState) => {
         const newGameState = [...prevGameState];
-        newGameState[rowIndex][itemIndex] = selected;
+        newGameState[rowIndex][itemIndex] = slot || selected;
         return newGameState;
       });
 
       setSelected(SOSSlot.E);
     }
   };
+
+  const moveAi = () => {
+    if (playersList[currentTurn].isAi) {
+      console.log("ai turn");
+      const aiMove = getAIMove(
+        gameState,
+        currentTurn,
+        players,
+        difficulty
+      );
+      if (aiMove) {
+        console.log("ai move", aiMove);
+        setSelected(aiMove.slot);
+        setTimeout(() => {
+          handleCellPress(aiMove.row, aiMove.col, aiMove.slot);
+        }, 500);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (!isGameOver) {
+      setTimeout(() => {
+        moveAi();
+      }, 500);
+    }
+  }, [gameState]);
 
   const handlePauseClose = (type: PauseCloseType) => {
     switch (type) {
