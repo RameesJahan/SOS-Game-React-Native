@@ -241,6 +241,7 @@ const App = (props: Props) => {
                   data: getJsonData({
                     playersList: playersList,
                     noRow,
+                    difficulty,
                   }),
                 },
               });
