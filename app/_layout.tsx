@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react'
-import { SplashScreen, Stack } from 'expo-router'
-import { StatusBar } from 'expo-status-bar'
+import "../global.css"
 import { SoundContextProvider } from '@/context/sound-context'
+import { Stack } from 'expo-router'
+import { StatusBar } from 'expo-status-bar'
+import React from 'react'
 
 const AppLayout = () => {
-  
-  
 
   return (
     <SoundContextProvider>

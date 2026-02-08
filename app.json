@@ -37,7 +37,8 @@
             "./assets/fonts/Tempus-Sans.ttf"
           ]
         }
-      ]
+      ],
+      "react-native-google-mobile-ads"
     ],
     "experiments": {
       "typedRoutes": true

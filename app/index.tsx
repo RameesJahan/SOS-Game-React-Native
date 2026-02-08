@@ -1,34 +1,32 @@
+import { router, SplashScreen, useFocusEffect } from "expo-router";
+import React, { useCallback, useEffect } from "react";
 import {
-  View,
-  Text,
-  ImageBackground,
+  Alert,
   Dimensions,
+  ImageBackground,
   Pressable,
   Share,
-  Alert,
+  Text,
+  View,
 } from "react-native";
-import React, { useCallback, useEffect, useState } from "react";
-import { router, SplashScreen, useFocusEffect } from "expo-router";
 
 import IMGPaperBg from "@/assets/images/paper-bg.jpg";
 import SOSHomeLogo from "@/components/SOSHomeLogo";
-import SOSNoPlayersSelector from "@/components/SOSNoPlayersSelector";
-import { PlayerData } from "@/types/types";
 import SOSHomePlayers from "@/components/SOSHomePlayers";
 import SOSHomeRowSelector, {
   RowSelectorType,
 } from "@/components/SOSHomeRowSelector";
+import SOSNoPlayersSelector from "@/components/SOSNoPlayersSelector";
+import { PlayerData } from "@/types/types";
 
-import AnimatedText from "@/components/AnimatedText";
 // import { Audio } from "expo-av";
-import { useAudioPlayer } from "expo-audio";
-import SOSMusicToggle from "@/components/SOSMusicToggle";
-import { useSavedState } from "@/hooks/useSavedState";
-import { useSoundContext } from "@/context/sound-context";
-import SOSSoundButton from "@/components/SOSSoundButton";
-import InAppReview from "react-native-in-app-review";
-import { AIDifficulty } from "@/utils/AILogic";
 import SOSDifficultySelector from "@/components/SOSDifficultySelector";
+import SOSSoundButton from "@/components/SOSSoundButton";
+import { useSoundContext } from "@/context/sound-context";
+import { useSavedState } from "@/hooks/useSavedState";
+import { AIDifficulty } from "@/utils/AILogic";
+import InAppReview from "react-native-in-app-review";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -193,92 +191,91 @@ const App = (props: Props) => {
 
   return (
     <View className="flex-1 bg-white">
-      <ImageBackground
-        className="flex flex-col flex-1 items-center pt-12 px-4"
-        source={IMGPaperBg}
-      >
-        <View className="p-12">
-          <SOSHomeLogo />
-        </View>
-        <SOSNoPlayersSelector
-          selected={
-            playersList.some((player) => player.isAi)
-              ? -1
-              : playersList.length - 2
-          }
-          onSelect={handleSelectNoPlayers}
-          onSelectAi={handleAiPlayer}
-        />
-        {playersList.some((player) => player.isAi) && (
-          <SOSDifficultySelector
-            difficulty={difficulty}
-            setDifficulty={setDifficulty}
+      <ImageBackground className="flex-1" source={IMGPaperBg}>
+        <SafeAreaView className="flex flex-col flex-1 items-center pt-12 px-4">
+          <View className="p-12">
+            <SOSHomeLogo />
+          </View>
+          <SOSNoPlayersSelector
+            selected={
+              playersList.some((player) => player.isAi)
+                ? -1
+                : playersList.length - 2
+            }
+            onSelect={handleSelectNoPlayers}
+            onSelectAi={handleAiPlayer}
           />
-        )}
-        <SOSHomePlayers
-          players={playersList}
-          onChangeText={handleOnPlayersNameChange}
-        />
-        <SOSHomeRowSelector
-          maxNoRow={MAX_ROW}
-          noRow={noRow}
-          setNoRow={handleSelectRow}
-        />
-        <View className="w-full flex flex-row items-center justify-between mt-8 px-1">
-          <Text className="text-2xl " style={{ fontFamily: "Tempus-Sans" }}>
-            Music:
-          </Text>
-          <SOSSoundButton />
-        </View>
-        {/* <SOSMusicToggle value={isSoundOn} onValueChange={(value) => setIsSoundOn(value)} /> */}
-        <View className="grow" />
-        <View className=" items-center justify-center justify-self-end mb-20">
-          <Pressable
-            onPress={() => {
-              router.push({
-                pathname: "/game",
-                params: {
-                  data: getJsonData({
-                    playersList: playersList,
-                    noRow,
-                    difficulty,
-                  }),
-                },
-              });
-            }}
-          >
-            <Text
-              className="text-5xl text-neutral-950"
-              style={{ fontFamily: "Tempus-Sans" }}
-            >
-              Start Game
+          {playersList.some((player) => player.isAi) && (
+            <SOSDifficultySelector
+              difficulty={difficulty}
+              setDifficulty={setDifficulty}
+            />
+          )}
+          <SOSHomePlayers
+            players={playersList}
+            onChangeText={handleOnPlayersNameChange}
+          />
+          <SOSHomeRowSelector
+            maxNoRow={MAX_ROW}
+            noRow={noRow}
+            setNoRow={handleSelectRow}
+          />
+          <View className="w-full flex flex-row items-center justify-between mt-8 px-1">
+            <Text className="text-2xl " style={{ fontFamily: "Tempus-Sans" }}>
+              Music:
             </Text>
-          </Pressable>
-        </View>
-        <View className="flex flex-row gap-4 w-full mb-4">
-          <Pressable
-            className="flex-1 items-center justify-center p-2 rounded-md border"
-            onPress={() => router.push("/about")}
-          >
-            <Text
-              className="text-2xl text-neutral-950"
-              style={{ fontFamily: "Tempus-Sans" }}
+            <SOSSoundButton />
+          </View>
+          {/* <SOSMusicToggle value={isSoundOn} onValueChange={(value) => setIsSoundOn(value)} /> */}
+          <View className="grow" />
+          <View className=" items-center justify-center justify-self-end mb-20">
+            <Pressable
+              onPress={() => {
+                router.push({
+                  pathname: "/game",
+                  params: {
+                    data: getJsonData({
+                      playersList: playersList,
+                      noRow,
+                      difficulty,
+                    }),
+                  },
+                });
+              }}
             >
-              About
-            </Text>
-          </Pressable>
-          <Pressable
-            className="flex-1 items-center justify-center p-2 rounded-md border"
-            onPress={onShare}
-          >
-            <Text
-              className="text-2xl text-neutral-950"
-              style={{ fontFamily: "Tempus-Sans" }}
+              <Text
+                className="text-5xl text-neutral-950"
+                style={{ fontFamily: "Tempus-Sans" }}
+              >
+                Start Game
+              </Text>
+            </Pressable>
+          </View>
+          <View className="flex flex-row gap-4 w-full mb-4">
+            <Pressable
+              className="flex-1 items-center justify-center p-2 rounded-md border"
+              onPress={() => router.push("/about")}
             >
-              Share
-            </Text>
-          </Pressable>
-        </View>
+              <Text
+                className="text-2xl text-neutral-950"
+                style={{ fontFamily: "Tempus-Sans" }}
+              >
+                About
+              </Text>
+            </Pressable>
+            <Pressable
+              className="flex-1 items-center justify-center p-2 rounded-md border"
+              onPress={onShare}
+            >
+              <Text
+                className="text-2xl text-neutral-950"
+                style={{ fontFamily: "Tempus-Sans" }}
+              >
+                Share
+              </Text>
+            </Pressable>
+          </View>
+        </SafeAreaView>
       </ImageBackground>
     </View>
   );
