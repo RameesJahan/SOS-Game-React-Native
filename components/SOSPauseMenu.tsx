@@ -1,4 +1,4 @@
-import { BANNER_AD_UNIT_ID } from "@/utils/AdHelpers";
+import { BANNER_AD_UNIT_ID, SHOW_ADS } from "@/utils/AdHelpers";
 import React from "react";
 import { View } from "react-native";
 import { BannerAd, BannerAdSize } from "react-native-google-mobile-ads";
@@ -18,14 +18,14 @@ export enum PauseCloseType {
 }
 
 const BannerContainer = () => {
-  return (
+  return SHOW_ADS ? (
     <View className="my-[12px]">
       <BannerAd
         size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
         unitId={BANNER_AD_UNIT_ID}
       />
     </View>
-  );
+  ) : null;
 };
 
 const SOSPauseMenu = ({ visible, onClose }: Props) => {

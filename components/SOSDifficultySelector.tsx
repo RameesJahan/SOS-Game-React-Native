@@ -8,64 +8,77 @@ import Animated, {
 } from "react-native-reanimated";
 
 type SOSDifficultySelectorProps = {
+  disabled: boolean;
   difficulty: AIDifficulty;
   setDifficulty: (difficulty: AIDifficulty) => void;
 };
 
 const SOSDifficultySelector = ({
+  disabled,
   difficulty,
   setDifficulty,
 }: SOSDifficultySelectorProps) => {
   return (
-    <Animated.View className="w-full" entering={FadeInUp} exiting={FadeOut}>
-      <View className="flex-row border rounded-md mt-[12px]">
+    <Animated.View
+      className={`w-full ${disabled ? "opacity-50" : ""}`}
+      entering={FadeInUp}
+      exiting={FadeOut}
+    >
+      <View className="flex-row rounded-md border-2 border-gray-200 overflow-hidden bg-gray-200 gap-2">
         <Pressable
+          disabled={disabled}
           onPress={() => setDifficulty(AIDifficulty.EASY)}
           className={
-            "flex-1 flex-row items-center justify-center py-[4px] " +
-            (difficulty == AIDifficulty.EASY ? "bg-gray-700" : "")
+            "flex-1 items-center justify-center py-3 rounded-md " +
+            (difficulty === AIDifficulty.EASY ? "bg-sos-green" : "")
           }
         >
           <Text
             className={
-              "text-xl py-2 " +
-              (difficulty == AIDifficulty.EASY ? "text-white" : "")
+              "text-lg " +
+              (difficulty === AIDifficulty.EASY
+                ? "text-sos-ink"
+                : "text-gray-500")
             }
             style={{ fontFamily: "Tempus-Sans" }}
           >
             Easy
           </Text>
         </Pressable>
-        <View className="w-[1px] h-full bg-gray-700" />
         <Pressable
+          disabled={disabled}
           onPress={() => setDifficulty(AIDifficulty.MEDIUM)}
           className={
-            "flex-1 flex-row items-center justify-center py-[4px] " +
-            (difficulty == AIDifficulty.MEDIUM ? "bg-gray-700" : "")
+            "flex-1 items-center justify-center py-3 rounded-md " +
+            (difficulty === AIDifficulty.MEDIUM ? "bg-sos-green" : "")
           }
         >
           <Text
             className={
-              "text-xl py-2 " +
-              (difficulty == AIDifficulty.MEDIUM ? "text-white" : "")
+              "text-lg " +
+              (difficulty === AIDifficulty.MEDIUM
+                ? "text-sos-ink"
+                : "text-gray-500")
             }
             style={{ fontFamily: "Tempus-Sans" }}
           >
             Medium
           </Text>
         </Pressable>
-        <View className="w-[1px] h-full bg-gray-700" />
         <Pressable
+          disabled={disabled}
           onPress={() => setDifficulty(AIDifficulty.HARD)}
           className={
-            "flex-1 flex-row items-center justify-center p-[4px] " +
-            (difficulty == AIDifficulty.HARD ? "bg-gray-700" : "")
+            "flex-1 items-center justify-center py-3 rounded-md " +
+            (difficulty === AIDifficulty.HARD ? "bg-sos-green" : "")
           }
         >
           <Text
             className={
-              "text-xl py-2 " +
-              (difficulty == AIDifficulty.HARD ? "text-white" : "")
+              "text-lg " +
+              (difficulty === AIDifficulty.HARD
+                ? "text-sos-ink"
+                : "text-gray-500")
             }
             style={{ fontFamily: "Tempus-Sans" }}
           >

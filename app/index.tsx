@@ -5,17 +5,16 @@ import {
   Dimensions,
   ImageBackground,
   Pressable,
+  ScrollView,
   Share,
   Text,
+  TextInput,
   View,
 } from "react-native";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
 import IMGPaperBg from "@/assets/images/paper-bg.jpg";
-import SOSHomeLogo from "@/components/SOSHomeLogo";
 import SOSHomePlayers from "@/components/SOSHomePlayers";
-import SOSHomeRowSelector, {
-  RowSelectorType,
-} from "@/components/SOSHomeRowSelector";
 import SOSNoPlayersSelector from "@/components/SOSNoPlayersSelector";
 import { PlayerData } from "@/types/types";
 
@@ -28,25 +27,29 @@ import { AIDifficulty } from "@/utils/AILogic";
 import InAppReview from "react-native-in-app-review";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { BannerAd, BannerAdSize } from "react-native-google-mobile-ads";
-import { BANNER_AD_UNIT_ID } from "@/utils/AdHelpers";
+import { BANNER_AD_UNIT_ID, SHOW_ADS } from "@/utils/AdHelpers";
+import SOSStyledButton from "@/components/SOSStyledButton";
+import { Colors } from "@/constants/Colors";
+import SOSHomeLogo from "@/components/SOSHomeLogo";
 
 SplashScreen.preventAutoHideAsync();
 
 type Props = {};
 
 const PlayerDataColors = [
-  "#dc2626",
-  "#d97706",
-  "#16a34a",
-  "#2563eb",
-  "#9333ea",
-  "#db2777",
+  "#000000", // black
+  "#2563eb", // blue
+  "#dc2626", // red
+  "#9333ea", // purple
+  "#00a63e", // green
+  "#ffdf20", // yellow
+  "#f6339a", // pink
 ];
 
 const createPlayersData = (x: number) => {
   const arr: PlayerData[] = new Array(x).fill(0).map((_, index) => ({
-    name: `Player ${index + 1}`,
-    color: PlayerDataColors[index],
+    name: index === 0 ? "Sam" : `Player ${index + 1}`,
+    color: PlayerDataColors[index % PlayerDataColors.length],
   }));
 
   return arr;
@@ -63,9 +66,11 @@ const getMaxRow = () => {
 };
 
 const MAX_ROW = getMaxRow();
+const MAX_COL = getMaxRow(); // Same logic for columns
 
 const App = (props: Props) => {
-  const [noRow, setNoRow] = useSavedState<number>("NO_OF_ROW", 5);
+  const [noRow, setNoRow] = useSavedState<number>("NO_OF_ROW", 8);
+  const [noCol, setNoCol] = useSavedState<number>("NO_OF_COL", 10);
   const [playersList, setPlayersList] = useSavedState<PlayerData[]>(
     "PLAYERS_LIST",
     createPlayersData(2)
@@ -82,32 +87,38 @@ const App = (props: Props) => {
     setPlayersList(createPlayersData(value + 2));
   };
 
-  const handleAiPlayer = () => {
-    setPlayersList(() => [
-      { name: "You", color: "#dc2626" },
-      { name: "AI", color: "#000000", isAi: true },
-    ]);
-  };
-
   const handleOnPlayersNameChange = (value: string, index: number) => {
     const arr = [...playersList];
     arr[index].name = value;
     setPlayersList(arr);
   };
 
-  const handleSelectRow = (type: RowSelectorType) => {
-    switch (type) {
-      case RowSelectorType.ADD:
-        if (noRow < MAX_ROW) {
-          setNoRow((prev) => prev + 1);
-        }
-        break;
-      case RowSelectorType.LESS:
-        if (noRow > 5) {
-          setNoRow((prev) => prev - 1);
-        }
-        break;
+  const handleSelectRow = (type: "add" | "less") => {
+    if (type === "add" && noRow < MAX_ROW) {
+      setNoRow((prev) => prev + 1);
+    } else if (type === "less" && noRow > 5) {
+      setNoRow((prev) => prev - 1);
     }
+  };
+
+  const handleSelectCol = (type: "add" | "less") => {
+    if (type === "add" && noCol < MAX_COL) {
+      setNoCol((prev) => prev + 1);
+    } else if (type === "less" && noCol > 5) {
+      setNoCol((prev) => prev - 1);
+    }
+  };
+
+  const handlePlayerColorChange = (index: number, color: string) => {
+    const arr = [...playersList];
+    arr[index].color = color;
+    setPlayersList(arr);
+  };
+
+  const handlePlayerTypeToggle = (index: number) => {
+    const arr = [...playersList];
+    arr[index].isAi = !arr[index].isAi;
+    setPlayersList(arr);
   };
 
   const showRatingDialog = () => {
@@ -194,44 +205,296 @@ const App = (props: Props) => {
   return (
     <View className="flex-1 bg-white">
       <ImageBackground className="flex-1" source={IMGPaperBg}>
-        <SafeAreaView className="flex flex-col flex-1 items-center px-4">
-          <BannerAd size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} unitId={BANNER_AD_UNIT_ID} />
-          <View className="p-12">
-            <SOSHomeLogo />
+        <SafeAreaView className="flex-1">
+          <ScrollView
+            className="flex-1"
+            contentContainerStyle={{ flexGrow: 1 }}
+            showsVerticalScrollIndicator={false}
+          >
+            <View className="flex flex-col px-4 pb-6">
+              {SHOW_ADS && (
+                <BannerAd
+                  size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+                  unitId={BANNER_AD_UNIT_ID}
+                />
+              )}
+              <View className="items-center py-2">
+                <SOSHomeLogo />
+              </View>
+              {/* How many players */}
+              <View className="w-full mb-6">
+                <View className="flex-row items-center mb-3">
+                  <MaterialCommunityIcons
+                    name="account-group"
+                    size={20}
+                    color="#0a0a0a"
+                  />
+                  <Text
+                    className="text-lg text-sos-ink ml-2"
+                    style={{ fontFamily: "Tempus-Sans" }}
+                  >
+                    How many players?
+                  </Text>
+                </View>
+                <SOSNoPlayersSelector
+                  selected={
+                    playersList.some((player) => player.isAi)
+                      ? -1
+                      : playersList.length - 2
+                  }
+                  onSelect={handleSelectNoPlayers}
+                />
+              </View>
+
+              <View className="w-full mb-6">
+                <SOSDifficultySelector
+                  disabled={!playersList.some((player) => player.isAi)}
+                  difficulty={difficulty}
+                  setDifficulty={setDifficulty}
+                />
+              </View>
+
+              {/* Player Cards */}
+              <View className="w-full mb-6">
+                {playersList.map((player, index) => (
+                  <View
+                    key={index}
+                    className="w-full rounded-2xl sos-border bg-white p-3 mb-3 shadow-card relative"
+                  >
+                    <View className="flex-row items-center justify-between">
+                      {/* Player label */}
+                      <Text
+                        className="text-xs uppercase text-gray-400 mb-1"
+                        style={{ fontFamily: "Tempus-Sans" }}
+                      >
+                        PLAYER {String(index + 1).padStart(2, "0")}
+                      </Text>
+                      {/* Human/AI selector top-right (replaces star) */}
+                      <View>
+                        <View className="flex-row rounded-md border-2 border-gray-200 overflow-hidden bg-gray-200">
+                          <Pressable
+                            onPress={() => handlePlayerTypeToggle(index)}
+                            className={`px-3 py-2 rounded-md items-center justify-center ${
+                              !player.isAi ? "bg-sos-green" : ""
+                            }`}
+                          >
+                            <Text
+                              className={`text-xs ${
+                                !player.isAi ? "text-sos-ink" : "text-gray-400"
+                              }`}
+                              style={{ fontFamily: "Tempus-Sans" }}
+                            >
+                              HUMAN
+                            </Text>
+                          </Pressable>
+                          <Pressable
+                            onPress={() => handlePlayerTypeToggle(index)}
+                            className={`px-3 py-1 rounded-md items-center justify-center ${
+                              player.isAi ? "bg-sos-green" : ""
+                            }`}
+                          >
+                            <Text
+                              className={`text-xs ${
+                                player.isAi ? "text-sos-ink" : "text-gray-400"
+                              }`}
+                              style={{ fontFamily: "Tempus-Sans" }}
+                            >
+                              AI
+                            </Text>
+                          </Pressable>
+                        </View>
+                      </View>
+                    </View>
+
+                    {/* Name input with dotted underline */}
+                    <View className="mb-2 relative">
+                      <TextInput
+                        className="text-base text-sos-ink pb-1.5"
+                        style={{
+                          fontFamily: "Tempus-Sans",
+                        }}
+                        value={player.name}
+                        onChangeText={(text) =>
+                          handleOnPlayersNameChange(text, index)
+                        }
+                        placeholder="Enter name"
+                        placeholderTextColor="#9ca3af"
+                      />
+                      <View
+                        className="absolute bottom-0 left-0 right-0 h-0.5"
+                        style={{
+                          borderBottomWidth: 1,
+                          borderBottomColor: "#d1d5db",
+                          borderStyle: "dashed",
+                        }}
+                      />
+                      {player.name && (
+                        <View className="absolute right-0 top-0.5">
+                          <MaterialCommunityIcons
+                            name="pencil-outline"
+                            size={14}
+                            color="#9ca3af"
+                          />
+                        </View>
+                      )}
+                    </View>
+
+                    {/* Signature Ink Color Picker */}
+                    <View className="flex-row items-center">
+                      <Text
+                        className="text-sm text-sos-ink mr-2"
+                        style={{ fontFamily: "Tempus-Sans" }}
+                      >
+                        Ink:
+                      </Text>
+                      <View className="flex-row gap-1.5">
+                        {PlayerDataColors.map((color) => (
+                          <Pressable
+                            key={color}
+                            onPress={() =>
+                              handlePlayerColorChange(index, color)
+                            }
+                            className={`w-7 h-7 rounded-full border-2 ${
+                              player.color === color
+                                ? "border-sos-green"
+                                : "border-sos-ink"
+                            }`}
+                            style={{ backgroundColor: color }}
+                          />
+                        ))}
+                      </View>
+                    </View>
+                  </View>
+                ))}
+              </View>
+              {SHOW_ADS && (
+                <BannerAd
+                  size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+                  unitId={BANNER_AD_UNIT_ID}
+                />
+              )}
+            </View>
+          </ScrollView>
+          {/* Board configuration */}
+          <View className="w-ful border-t bg-white border-sos-green px-4 py-4 shadow-card">
+            <View className="flex-row items-center justify-between mb-5">
+              <View className="flex-row items-center">
+                <MaterialCommunityIcons name="grid" size={22} color="#6cee2b" />
+                <Text
+                  className="text-xs text-sos-ink uppercase tracking-wider ml-2.5"
+                  style={{ fontFamily: "Tempus-Sans" }}
+                >
+                  BOARD CONFIGURATION
+                </Text>
+              </View>
+              <View className="flex-row gap-2"></View>
+            </View>
+
+            <View className="flex-row items-end mb-5 gap-5">
+              {/* ROWS */}
+              <View className="flex-1 items-center justify-between">
+                <Text
+                  className="text-xs text-sos-ink uppercase tracking-wide"
+                  style={{ fontFamily: "Tempus-Sans" }}
+                >
+                  ROWS
+                </Text>
+                <View className="flex-row w-full items-center gap-2.5 rounded-xl border-2 border-dashed border-gray-400 px-3 py-2.5">
+                  <SOSStyledButton
+                    disabled={noRow <= 5}
+                    onPress={() => handleSelectRow("less")}
+                  >
+                    <MaterialCommunityIcons
+                      name="minus"
+                      size={20}
+                      color={noRow <= 5 ? "#9ca3af" : "#0a0a0a"}
+                    />
+                  </SOSStyledButton>
+                  <Text
+                    className="flex-1 text-3xl text-sos-ink min-w-[40px] text-center"
+                    style={{ fontFamily: "Tempus-Sans" }}
+                  >
+                    {noRow}
+                  </Text>
+                  <SOSStyledButton
+                    disabled={noRow >= MAX_ROW}
+                    onPress={() => handleSelectRow("add")}
+                  >
+                    <MaterialCommunityIcons
+                      name="plus"
+                      size={20}
+                      color={
+                        noRow >= MAX_ROW ? "#9ca3af" : Colors.light.sosGreen
+                      }
+                    />
+                  </SOSStyledButton>
+                </View>
+              </View>
+              <View className="items-center">
+                <Text
+                  className="text-xs text-sos-ink uppercase tracking-wide"
+                  style={{ fontFamily: "Tempus-Sans" }}
+                >
+                  SOUND
+                </Text>
+                <SOSStyledButton
+                  onPress={() => setIsSoundOn(!isSoundOn)}
+                  selected={isSoundOn}
+                >
+                  <MaterialCommunityIcons
+                    name="volume-high"
+                    size={38}
+                    color={
+                      isSoundOn ? Colors.light.sosGreen : Colors.light.sosInk
+                    }
+                  />
+                </SOSStyledButton>
+              </View>
+              {/* COLUMNS */}
+              {/* <View className="flex-1 items-center justify-between">
+                    <Text
+                      className="text-xs text-sos-ink uppercase tracking-wide"
+                      style={{ fontFamily: "Tempus-Sans" }}
+                    >
+                      COLUMNS
+                    </Text>
+                    <View className="flex-row items-center gap-2.5 rounded-xl border-2 border-dashed border-gray-400 px-3 py-2.5">
+                      <Pressable
+                        disabled={noCol <= 5}
+                        onPress={() => handleSelectCol("less")}
+                        className="rounded-lg border-3 border-sos-ink p-2 bg-white min-w-[36px] items-center justify-center"
+                      >
+                        <MaterialCommunityIcons
+                          name="minus"
+                          size={20}
+                          color={noCol <= 5 ? "#9ca3af" : "#0a0a0a"}
+                        />
+                      </Pressable>
+                      <Text
+                        className="text-3xl text-sos-ink min-w-[40px] text-center"
+                        style={{ fontFamily: "Tempus-Sans" }}
+                      >
+                        {noCol}
+                      </Text>
+                      <Pressable
+                        disabled={noCol >= MAX_COL}
+                        onPress={() => handleSelectCol("add")}
+                        className={`rounded-lg border-3 border-sos-ink p-2 min-w-[36px] items-center justify-center ${
+                          noCol >= MAX_COL ? "bg-white" : "bg-sos-green"
+                        }`}
+                      >
+                        <MaterialCommunityIcons
+                          name="plus"
+                          size={20}
+                          color={noCol >= MAX_COL ? "#9ca3af" : "#0a0a0a"}
+                        />
+                      </Pressable>
+                    </View>
+                  </View> */}
+            </View>
           </View>
-          <SOSNoPlayersSelector
-            selected={
-              playersList.some((player) => player.isAi)
-                ? -1
-                : playersList.length - 2
-            }
-            onSelect={handleSelectNoPlayers}
-            onSelectAi={handleAiPlayer}
-          />
-          {playersList.some((player) => player.isAi) && (
-            <SOSDifficultySelector
-              difficulty={difficulty}
-              setDifficulty={setDifficulty}
-            />
-          )}
-          <SOSHomePlayers
-            players={playersList}
-            onChangeText={handleOnPlayersNameChange}
-          />
-          <SOSHomeRowSelector
-            maxNoRow={MAX_ROW}
-            noRow={noRow}
-            setNoRow={handleSelectRow}
-          />
-          <View className="w-full flex flex-row items-center justify-between mt-8 px-1">
-            <Text className="text-2xl " style={{ fontFamily: "Tempus-Sans" }}>
-              Music:
-            </Text>
-            <SOSSoundButton />
-          </View>
-          {/* <SOSMusicToggle value={isSoundOn} onValueChange={(value) => setIsSoundOn(value)} /> */}
-          <View className="grow" />
-          <View className=" items-center justify-center justify-self-end mb-20">
+          <View className="px-4">
+            {/* Start Game CTA */}
             <Pressable
               onPress={() => {
                 router.push({
@@ -240,41 +503,19 @@ const App = (props: Props) => {
                     data: getJsonData({
                       playersList: playersList,
                       noRow,
+                      noCol,
                       difficulty,
                     }),
                   },
                 });
               }}
+              className="w-full sos-border rounded-xl bg-sos-green py-4 px-8 items-center justify-center shadow-card active:opacity-90 mb-8"
             >
               <Text
-                className="text-5xl text-neutral-950"
+                className="text-3xl text-sos-ink uppercase tracking-wide"
                 style={{ fontFamily: "Tempus-Sans" }}
               >
-                Start Game
-              </Text>
-            </Pressable>
-          </View>
-          <View className="flex flex-row gap-4 w-full mb-4">
-            <Pressable
-              className="flex-1 items-center justify-center p-2 rounded-md border"
-              onPress={() => router.push("/about")}
-            >
-              <Text
-                className="text-2xl text-neutral-950"
-                style={{ fontFamily: "Tempus-Sans" }}
-              >
-                About
-              </Text>
-            </Pressable>
-            <Pressable
-              className="flex-1 items-center justify-center p-2 rounded-md border"
-              onPress={onShare}
-            >
-              <Text
-                className="text-2xl text-neutral-950"
-                style={{ fontFamily: "Tempus-Sans" }}
-              >
-                Share
+                START GAME!
               </Text>
             </Pressable>
           </View>

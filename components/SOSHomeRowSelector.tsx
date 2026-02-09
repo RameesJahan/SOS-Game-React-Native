@@ -15,35 +15,43 @@ export enum RowSelectorType {
 
 const SOSHomeRowSelector = ({ noRow, setNoRow, maxNoRow }: Props) => {
   return (
-    <View className="w-full flex flex-row items-center justify-between mt-8 px-1">
-      <Text className="text-2xl " style={{ fontFamily: "Tempus-Sans" }}>
-        Number of rows:
+    <View className="w-full flex flex-row items-center justify-between">
+      <Text
+        className="text-lg text-sos-ink uppercase tracking-wide"
+        style={{ fontFamily: "Tempus-Sans" }}
+      >
+        Rows
       </Text>
-      <View className="flex flex-row items-center justify-center">
+      <View className="flex flex-row items-center gap-2 rounded-xl border-2 border-dashed border-gray-400 px-2 py-1">
         <Pressable
           disabled={noRow <= 5}
-          onPress={() =>
-            setNoRow(RowSelectorType.LESS)
-          }
+          onPress={() => setNoRow(RowSelectorType.LESS)}
+          className="rounded-lg border-2 border-sos-ink p-1 bg-white min-w-[36px] items-center justify-center"
         >
           <MaterialCommunityIcons
-            name="minus-circle"
-            size={32}
-            color={noRow <= 5 ? "gray" : "black"}
+            name="minus"
+            size={22}
+            color={noRow <= 5 ? "#9ca3af" : "#0a0a0a"}
           />
         </Pressable>
         <Text
-          className="py-1 px-2 text-3xl text-center text-black"
+          className="text-2xl text-sos-ink min-w-[40px] text-center"
           style={{ fontFamily: "Tempus-Sans" }}
-        >{noRow}</Text>
+        >
+          {noRow}
+        </Text>
         <Pressable
           disabled={noRow >= maxNoRow}
           onPress={() => setNoRow(RowSelectorType.ADD)}
+          className={
+            "rounded-lg border-2 border-sos-ink p-1 min-w-[36px] items-center justify-center " +
+            (noRow >= maxNoRow ? "bg-white" : "bg-sos-green")
+          }
         >
           <MaterialCommunityIcons
-            name="plus-circle"
-            size={32}
-            color={noRow >= maxNoRow ? "gray" : "black"}
+            name="plus"
+            size={22}
+            color={noRow >= maxNoRow ? "#9ca3af" : "#0a0a0a"}
           />
         </Pressable>
       </View>

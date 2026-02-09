@@ -27,7 +27,7 @@ const SOSHomePlayers = ({ players, onChangeText }: Props) => {
             exiting={FadeOut}
             className="w-1/2 p-1"
             >
-            <View className="flex flex-row items-center justify-between rounded-md border p-2">
+            <View className="flex flex-row items-center justify-between rounded-xl border-3 border-sos-ink bg-white p-3 shadow-card">
 
               <TextInput
                 className="text-xl grow text-gray-700" 

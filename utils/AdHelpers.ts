@@ -7,6 +7,8 @@ import { TestIds } from "react-native-google-mobile-ads";
 
 export { PermissionStatus };
 
+export const SHOW_ADS = false;
+
 export const requestAuthorization = async () => {
   const { status } = await getTrackingPermissionsAsync();
   if (status === PermissionStatus.UNDETERMINED) {

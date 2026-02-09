@@ -1,45 +1,38 @@
-import { View, Text, Pressable } from 'react-native'
-import React from 'react'
+import { View, Text, Pressable, ScrollView } from "react-native";
+import React from "react";
 
 type Props = {
-  selected: number,
-  onSelect: (value: number) => void
-  onSelectAi: () => void
-}
+  selected: number;
+  onSelect: (value: number) => void;
+};
 
-const SOSNoPlayersSelector = ({ selected, onSelect, onSelectAi }: Props) => {
-  const arr = new Array(5).fill(0);
+const SOSNoPlayersSelector = ({ selected, onSelect }: Props) => {
+  const arr = new Array(6).fill(0); // 2P, 3P, 4P, 5P
   return (
-    <View className="flex flex-row justify-center items-center gap-2 w-full">
-      <Pressable
-            className={"flex-1 border rounded-md items-center justify-center " + (selected == -1 ? "bg-gray-700" : "")}
-            onPress={() => onSelectAi()}
-          >
-            <Text 
-              className={"text-2xl py-2 " + (selected == -1 ? "text-white" : "")}
-              style={{ fontFamily: "Tempus-Sans" }}
-              >
-                1P
-            </Text>
-          </Pressable>
-      {
-        arr.map((_, index) => (
+    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+      <View className="flex flex-row justify-center items-center gap-2 w-full">
+        {arr.map((_, index) => (
           <Pressable
             key={index}
-            className={"flex-1 border rounded-md items-center justify-center " + (selected == index ? "bg-gray-700" : "")}
+            className={
+              "rounded-xl items-center justify-center py-3 px-7 " +
+              (selected === index
+                ? "bg-sos-green/20 sos-border-selected"
+                : "bg-white sos-border")
+            }
             onPress={() => onSelect(index)}
           >
-            <Text 
-              className={"text-2xl py-2 " + (selected == index ? "text-white" : "")}
+            <Text
+              className="text-lg text-sos-ink"
               style={{ fontFamily: "Tempus-Sans" }}
-              >
-                {index + 2}P
+            >
+              {index + 2}P
             </Text>
           </Pressable>
-        ))
-      }
-    </View>
-  )
-}
+        ))}
+      </View>
+    </ScrollView>
+  );
+};
 
-export default SOSNoPlayersSelector
+export default SOSNoPlayersSelector;

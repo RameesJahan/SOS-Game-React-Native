@@ -13,7 +13,7 @@ import {
   SlotDirection,
   SOSSlot,
 } from "@/types/types";
-import { BANNER_AD_UNIT_ID } from "@/utils/AdHelpers";
+import { BANNER_AD_UNIT_ID, SHOW_ADS } from "@/utils/AdHelpers";
 import { AIDifficulty, getAIMove } from "@/utils/AILogic";
 import {
   changeTurn,
@@ -220,10 +220,12 @@ const Game = () => {
     >
       <SafeAreaView className="flex-1">
         <ScrollView className="flex-1">
-          <BannerAd
-            size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
-            unitId={BANNER_AD_UNIT_ID}
-          />
+          {SHOW_ADS && (
+            <BannerAd
+              size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+              unitId={BANNER_AD_UNIT_ID}
+            />
+          )}
           <View className="flex flex-row items-center justify-end gap-x-[12px] p-4">
             <SOSSoundButton size={38} />
             <Pressable onPress={() => setShowPause(true)}>
@@ -238,12 +240,14 @@ const Game = () => {
             currentPlayer={players[currentTurn]}
           />
           <SOSSelector selected={selected} onSelect={setSelected} />
-          <View className="justify-center items-center">
-            <BannerAd
-              size={BannerAdSize.MEDIUM_RECTANGLE}
-              unitId={BANNER_AD_UNIT_ID}
-            />
-          </View>
+          {SHOW_ADS && (
+            <View className="justify-center items-center">
+              <BannerAd
+                size={BannerAdSize.MEDIUM_RECTANGLE}
+                unitId={BANNER_AD_UNIT_ID}
+              />
+            </View>
+          )}
         </ScrollView>
       </SafeAreaView>
       <SOSPauseMenu visible={showPause} onClose={handlePauseClose} />
