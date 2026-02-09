@@ -1,13 +1,10 @@
-import {
-  BackHandler,
-  ImageBackground,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
-import React, { useEffect, useState } from "react";
 import SOSBoard from "@/components/SOSBoard";
+import SOSPauseMenu, { PauseCloseType } from "@/components/SOSPauseMenu";
+import SOSPlayersList from "@/components/SOSPlayersList";
+import SOSSelector from "@/components/SOSSelector";
+import SOSSoundButton from "@/components/SOSSoundButton";
+import SOSWinnerDialog, { WinnerCloseType } from "@/components/SOSWinnerDialog";
+import { useSavedState } from "@/hooks/useSavedState";
 import {
   cell,
   GameState,
@@ -16,8 +13,8 @@ import {
   SlotDirection,
   SOSSlot,
 } from "@/types/types";
-import SOSSelector from "@/components/SOSSelector";
-import SOSPlayersList from "@/components/SOSPlayersList";
+import { BANNER_AD_UNIT_ID } from "@/utils/AdHelpers";
+import { AIDifficulty, getAIMove } from "@/utils/AILogic";
 import {
   changeTurn,
   checkIsGameOver,
@@ -27,15 +24,19 @@ import {
   getDirection,
   getWinners,
 } from "@/utils/GameLogic";
-import { router, useLocalSearchParams, useNavigation } from "expo-router";
-import { SafeAreaView } from "react-native-safe-area-context";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import SOSPauseMenu, { PauseCloseType } from "@/components/SOSPauseMenu";
-import SOSWinnerDialog, { WinnerCloseType } from "@/components/SOSWinnerDialog";
-import SOSSoundButton from "@/components/SOSSoundButton";
-import InAppReview from "react-native-in-app-review";
-import { useSavedState } from "@/hooks/useSavedState";
-import { AIDifficulty, getAIMove } from "@/utils/AILogic";
+import { router, useLocalSearchParams } from "expo-router";
+import React, { useEffect, useState } from "react";
+import {
+  BackHandler,
+  ImageBackground,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  View,
+} from "react-native";
+import { BannerAd, BannerAdSize } from "react-native-google-mobile-ads";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const getJsonData = <T,>(x: string): T => {
   return JSON.parse(x);
@@ -109,7 +110,11 @@ const Game = () => {
     });
   };
 
-  const handleCellPress = (rowIndex: number, itemIndex: number, slot?: SOSSlot) => {
+  const handleCellPress = (
+    rowIndex: number,
+    itemIndex: number,
+    slot?: SOSSlot
+  ) => {
     if (gameState[rowIndex][itemIndex] === SOSSlot.E) {
       //if it's a empty cell
       console.log("Selected:", selected);
@@ -151,12 +156,7 @@ const Game = () => {
   const moveAi = () => {
     if (playersList[currentTurn].isAi) {
       console.log("ai turn");
-      const aiMove = getAIMove(
-        gameState,
-        currentTurn,
-        players,
-        difficulty
-      );
+      const aiMove = getAIMove(gameState, currentTurn, players, difficulty);
       if (aiMove) {
         console.log("ai move", aiMove);
         setSelected(aiMove.slot);
@@ -219,20 +219,32 @@ const Game = () => {
       source={require("@/assets/images/paper-bg.jpg")}
     >
       <SafeAreaView className="flex-1">
-        <View className="flex flex-row items-center justify-end gap-x-[12px] p-4">
-          <SOSSoundButton size={38} />
-          <Pressable onPress={() => setShowPause(true)}>
-            <Ionicons name="pause-circle-outline" size={48} color="black" />
-          </Pressable>
-        </View>
-        <SOSPlayersList players={players} currentTurn={currentTurn} />
-        <SOSBoard
-          gameState={gameState}
-          onCellPress={handleCellPress}
-          crossed={crossedState}
-          currentPlayer={players[currentTurn]}
-        />
-        <SOSSelector selected={selected} onSelect={setSelected} />
+        <ScrollView className="flex-1">
+          <BannerAd
+            size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+            unitId={BANNER_AD_UNIT_ID}
+          />
+          <View className="flex flex-row items-center justify-end gap-x-[12px] p-4">
+            <SOSSoundButton size={38} />
+            <Pressable onPress={() => setShowPause(true)}>
+              <Ionicons name="pause-circle-outline" size={48} color="black" />
+            </Pressable>
+          </View>
+          <SOSPlayersList players={players} currentTurn={currentTurn} />
+          <SOSBoard
+            gameState={gameState}
+            onCellPress={handleCellPress}
+            crossed={crossedState}
+            currentPlayer={players[currentTurn]}
+          />
+          <SOSSelector selected={selected} onSelect={setSelected} />
+          <View className="justify-center items-center">
+            <BannerAd
+              size={BannerAdSize.MEDIUM_RECTANGLE}
+              unitId={BANNER_AD_UNIT_ID}
+            />
+          </View>
+        </ScrollView>
       </SafeAreaView>
       <SOSPauseMenu visible={showPause} onClose={handlePauseClose} />
       <SOSWinnerDialog

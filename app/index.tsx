@@ -27,6 +27,8 @@ import { useSavedState } from "@/hooks/useSavedState";
 import { AIDifficulty } from "@/utils/AILogic";
 import InAppReview from "react-native-in-app-review";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { BannerAd, BannerAdSize } from "react-native-google-mobile-ads";
+import { BANNER_AD_UNIT_ID } from "@/utils/AdHelpers";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -192,7 +194,8 @@ const App = (props: Props) => {
   return (
     <View className="flex-1 bg-white">
       <ImageBackground className="flex-1" source={IMGPaperBg}>
-        <SafeAreaView className="flex flex-col flex-1 items-center pt-12 px-4">
+        <SafeAreaView className="flex flex-col flex-1 items-center px-4">
+          <BannerAd size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} unitId={BANNER_AD_UNIT_ID} />
           <View className="p-12">
             <SOSHomeLogo />
           </View>

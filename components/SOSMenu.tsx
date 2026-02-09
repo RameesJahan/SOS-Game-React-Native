@@ -13,7 +13,7 @@ const SOSMenu = ({ title,children }: PropsWithChildren<Props>) => {
           source={require("@/assets/images/paper-bg.jpg")}
           >
           <Text style={{ fontFamily: "Tempus-Sans" }} className="text-4xl">{title}</Text>
-          <View className="w-full mt-2 space-y-3">
+          <View className="w-full mt-2 gap-y-[8px]">
             {children}
           </View>
       </ImageBackground>

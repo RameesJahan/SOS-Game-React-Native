@@ -38,7 +38,13 @@
           ]
         }
       ],
-      "react-native-google-mobile-ads"
+      [
+        "react-native-google-mobile-ads/app.plugin.js",
+        {
+          "androidAppId": "ca-app-pub-2941930161933702~9557920968"
+        }
+      ],
+      "expo-tracking-transparency"
     ],
     "experiments": {
       "typedRoutes": true
