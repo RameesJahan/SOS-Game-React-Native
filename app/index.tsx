@@ -31,6 +31,7 @@ import { BANNER_AD_UNIT_ID, SHOW_ADS } from "@/utils/AdHelpers";
 import SOSStyledButton from "@/components/SOSStyledButton";
 import { Colors } from "@/constants/Colors";
 import SOSHomeLogo from "@/components/SOSHomeLogo";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -73,12 +74,12 @@ const App = (props: Props) => {
   const [noCol, setNoCol] = useSavedState<number>("NO_OF_COL", 10);
   const [playersList, setPlayersList] = useSavedState<PlayerData[]>(
     "PLAYERS_LIST",
-    createPlayersData(2)
+    createPlayersData(2),
   );
   const [rating, setRating] = useSavedState<string>("RATING", "asked");
   const [difficulty, setDifficulty] = useSavedState<AIDifficulty>(
     "DIFFICULTY",
-    AIDifficulty.EASY
+    AIDifficulty.EASY,
   );
   // const [isMusicOn, setIsMusicOn, isLoading] = useSavedState<boolean>("IS_MUSIC", true);
   const { isSoundOn, setIsSoundOn, isLoading } = useSoundContext();
@@ -148,7 +149,7 @@ const App = (props: Props) => {
               setRating("done");
             },
           },
-        ]
+        ],
       );
     }
   };
@@ -172,7 +173,7 @@ const App = (props: Props) => {
       if (rating === "should") {
         showRatingDialog();
       }
-    }, [rating, showRatingDialog])
+    }, [rating, showRatingDialog]),
   );
 
   useEffect(() => {
@@ -218,8 +219,14 @@ const App = (props: Props) => {
                   unitId={BANNER_AD_UNIT_ID}
                 />
               )}
-              <View className="items-center py-2">
+              <View className="items-center py-2 flex flex-row justify-between gap-x-2">
                 <SOSHomeLogo />
+                <SOSStyledButton
+                  containerClassName="bg-white w-16 h-16 items-center justify-center"
+                  onPress={() => router.push("/about")}
+                >
+                  <FontAwesome5 name="info" size={24} color="black" />
+                </SOSStyledButton>
               </View>
               {/* How many players */}
               <View className="w-full mb-6">
