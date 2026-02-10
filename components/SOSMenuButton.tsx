@@ -11,7 +11,7 @@ const SOSMenuButton = ({ title, color, ...props }: Props) => {
     <Pressable 
       {...props}
       android_ripple={{ color: "gray" }}
-      className={`w-full p-2 rounded-md border items-center justify-center border-[${color}]`}
+      className={`w-full p-2 rounded-lg items-center justify-center sos-border bg-white`}
       // style={{ borderColor: color }}
       >
       <Text className='text-xl' style={{ fontFamily: "Tempus-Sans", color }}>{title}</Text>

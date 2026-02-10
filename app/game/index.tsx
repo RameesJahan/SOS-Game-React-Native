@@ -3,6 +3,7 @@ import SOSPauseMenu, { PauseCloseType } from "@/components/SOSPauseMenu";
 import SOSPlayersList from "@/components/SOSPlayersList";
 import SOSSelector from "@/components/SOSSelector";
 import SOSSoundButton from "@/components/SOSSoundButton";
+import SOSStyledButton from "@/components/SOSStyledButton";
 import SOSWinnerDialog, { WinnerCloseType } from "@/components/SOSWinnerDialog";
 import { useSavedState } from "@/hooks/useSavedState";
 import {
@@ -50,13 +51,13 @@ const Game = () => {
     difficulty: AIDifficulty;
   }>(data as string);
   const [gameState, setGameState] = useState<GameState>(
-    createGameState(Number(noRow))
+    createGameState(Number(noRow)),
   );
   const [selected, setSelected] = useState<SOSSlot>(SOSSlot.E);
   const [isGameOver, setIsGameOver] = useState(false);
 
   const [players, setPlayers] = useState<Array<Player>>(
-    createPlayersArray(playersList)
+    createPlayersArray(playersList),
   );
   const [currentTurn, setCurrentTurn] = useState<number>(0);
 
@@ -67,6 +68,7 @@ const Game = () => {
 
   const [showPause, setShowPause] = useState(false);
   const [rating, setRating] = useSavedState<string>("RATING", "asked");
+  const [showPressEffect, setShowPressEffect] = useState<cell | null>(null);
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
@@ -74,7 +76,7 @@ const Game = () => {
       () => {
         setShowPause(true);
         return true;
-      }
+      },
     );
     return () => backHandler.remove();
   }, []);
@@ -97,7 +99,7 @@ const Game = () => {
     setCrossedState((prev) => {
       if (prev) {
         const exist = prev.find(
-          (item) => item.cell.x == cell.x && item.cell.y == cell.y
+          (item) => item.cell.x == cell.x && item.cell.y == cell.y,
         );
         if (exist) {
           const newData: SlotDirection[] = [...exist.dirs, dir];
@@ -113,7 +115,7 @@ const Game = () => {
   const handleCellPress = (
     rowIndex: number,
     itemIndex: number,
-    slot?: SOSSlot
+    slot?: SOSSlot,
   ) => {
     if (gameState[rowIndex][itemIndex] === SOSSlot.E) {
       //if it's a empty cell
@@ -124,12 +126,14 @@ const Game = () => {
         return;
       }
 
+      setShowPressEffect({ x: rowIndex, y: itemIndex });
+
       //check if it's SOS
       const { points, pos } = checkSOS(
         slot || selected,
         rowIndex,
         itemIndex,
-        gameState
+        gameState,
       );
 
       //update score and current turn
@@ -175,6 +179,15 @@ const Game = () => {
     }
   }, [gameState]);
 
+  useEffect(() => {
+    if (showPressEffect) {
+      setTimeout(() => {
+        console.log("showPressEffect", showPressEffect);
+        setShowPressEffect(null);
+      }, 500);
+    }
+  }, [showPressEffect]);
+
   const handlePauseClose = (type: PauseCloseType) => {
     switch (type) {
       case PauseCloseType.RESUME:
@@ -218,38 +231,44 @@ const Game = () => {
       className="flex-1"
       source={require("@/assets/images/paper-bg.jpg")}
     >
-      <SafeAreaView className="flex-1">
-        <ScrollView className="flex-1">
-          {SHOW_ADS && (
-            <BannerAd
-              size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
-              unitId={BANNER_AD_UNIT_ID}
-            />
-          )}
-          <View className="flex flex-row items-center justify-end gap-x-[12px] p-4">
-            <SOSSoundButton size={38} />
-            <Pressable onPress={() => setShowPause(true)}>
-              <Ionicons name="pause-circle-outline" size={48} color="black" />
-            </Pressable>
-          </View>
-          <SOSPlayersList players={players} currentTurn={currentTurn} />
-          <SOSBoard
-            gameState={gameState}
-            onCellPress={handleCellPress}
-            crossed={crossedState}
-            currentPlayer={players[currentTurn]}
-          />
-          <SOSSelector selected={selected} onSelect={setSelected} />
-          {SHOW_ADS && (
-            <View className="justify-center items-center">
+      <View className="flex-1" style={{ backgroundColor: `${players[currentTurn].color}1d` }}>
+        <SafeAreaView className="flex-1">
+          <ScrollView className="flex-1">
+            {SHOW_ADS && (
               <BannerAd
-                size={BannerAdSize.MEDIUM_RECTANGLE}
+                size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
                 unitId={BANNER_AD_UNIT_ID}
               />
+            )}
+            <View className="flex flex-row items-center justify-end gap-x-[12px] p-4">
+              <SOSSoundButton size={28} />
+              <SOSStyledButton
+                containerClassName="bg-white"
+                onPress={() => setShowPause(true)}
+              >
+                <Ionicons name="pause" size={28} color="black" />
+              </SOSStyledButton>
             </View>
-          )}
-        </ScrollView>
-      </SafeAreaView>
+            <SOSPlayersList players={players} currentTurn={currentTurn} />
+            <SOSBoard
+              gameState={gameState}
+              onCellPress={handleCellPress}
+              crossed={crossedState}
+              currentPlayer={players[currentTurn]}
+              showPressEffect={showPressEffect}
+            />
+            <SOSSelector selected={selected} onSelect={setSelected} />
+            {SHOW_ADS && (
+              <View className="justify-center items-center">
+                <BannerAd
+                  size={BannerAdSize.MEDIUM_RECTANGLE}
+                  unitId={BANNER_AD_UNIT_ID}
+                />
+              </View>
+            )}
+          </ScrollView>
+        </SafeAreaView>
+      </View>
       <SOSPauseMenu visible={showPause} onClose={handlePauseClose} />
       <SOSWinnerDialog
         visible={isGameOver}

@@ -5,19 +5,20 @@ import { useSavedColor } from "@/hooks/useSavedColor";
 import SOSStrike from "./SOSStrike";
 
 type Props = {
-  gameState: GameState
-  crossed: Array<{cell: cell, dirs: SlotDirection[]}> | null
-  currentPlayer : Player
+  gameState: GameState;
+  crossed: Array<{ cell: cell; dirs: SlotDirection[] }> | null;
+  currentPlayer: Player;
   onCellPress: (x: number, y: number) => void;
-}
+  showPressEffect: cell | null;
+};
 
-
-
-
-
-const SOSBoard = ({gameState, crossed, currentPlayer, onCellPress}: PropsWithChildren<Props>) => { 
-
-
+const SOSBoard = ({
+  gameState,
+  crossed,
+  currentPlayer,
+  onCellPress,
+  showPressEffect,
+}: PropsWithChildren<Props>) => {
   const getSlotText = (slot: SOSSlot) => {
     switch (slot) {
       case SOSSlot.S:
@@ -27,74 +28,68 @@ const SOSBoard = ({gameState, crossed, currentPlayer, onCellPress}: PropsWithChi
       default:
         return "";
     }
-  }
+  };
 
   const getVariant = (dir: SlotDirection) => {
     switch (dir) {
       case SlotDirection.DIAGX:
-        return "diagonalX"
+        return "diagonalX";
       case SlotDirection.DIAGY:
-        return "diagonalY"
+        return "diagonalY";
       case SlotDirection.VER:
-        return "vertical"
+        return "vertical";
       case SlotDirection.HOR:
-        return "horizontal"
+        return "horizontal";
       default:
-        return undefined
+        return undefined;
     }
-  }
+  };
 
   return (
-    
-    <View className="items-center">
+    <View className="items-center w-full aspect-square justify-center">
       <View className="aspect-square p-2">
         {gameState.map((row, rowIndex) => (
           <View key={rowIndex} className="flex flex-row">
             {row.map((item, itemIndex) => (
-              <View  key={itemIndex} className="flex-1 relative">
+              <View key={itemIndex} className="flex-1 relative">
                 <Pressable
-                onPress={() => onCellPress(rowIndex, itemIndex)}
-                className={`aspect-square border items-center justify-center`}
-                style={{ borderColor : currentPlayer.color, width : 40 }}
-              >
-                <Text
-                  className={`text-2xl`}
-                  style={{ fontFamily: "Tempus-Sans" }}
+                  onPress={() => onCellPress(rowIndex, itemIndex)}
+                  className={`aspect-square border border-sos-ink items-center justify-center ${showPressEffect?.x == rowIndex && showPressEffect?.y == itemIndex ? "bg-yellow-300/30" : ""}`}
+                  style={{ borderColor: currentPlayer.color, width: 40 }}
                 >
-                  {getSlotText(item)}
-                </Text>
-              </Pressable>
-              {
-                crossed?.map((cell, index) => {
-                  if(cell.cell.x == rowIndex && cell.cell.y == itemIndex){
+                  <Text
+                    className={`text-2xl`}
+                    style={{ fontFamily: "Tempus-Sans" }}
+                  >
+                    {getSlotText(item)}
+                  </Text>
+                </Pressable>
+                {crossed?.map((cell, index) => {
+                  if (cell.cell.x == rowIndex && cell.cell.y == itemIndex) {
                     return (
                       <View
                         key={index}
                         className="flex-1 absolute"
-                        style={{ width : 40, height : 40 }}
-                        >
-                          {
-                            cell.dirs.map((dir, i) => <SOSStrike key={i} variant={getVariant(dir)} />)
-                          }
-                      </View>  
-                    )
+                        style={{ width: 40, height: 40 }}
+                      >
+                        {cell.dirs.map((dir, i) => (
+                          <SOSStrike key={i} variant={getVariant(dir)} />
+                        ))}
+                      </View>
+                    );
                   }
-                })
-              }
-              
-              {/* {((itemIndex >= 1 && rowIndex >= 1) && (itemIndex < gameState.length-1 && rowIndex < gameState.length-1)) && <SOSStrike variant='horizontal' />}
+                })}
+
+                {/* {((itemIndex >= 1 && rowIndex >= 1) && (itemIndex < gameState.length-1 && rowIndex < gameState.length-1)) && <SOSStrike variant='horizontal' />}
               {((itemIndex >= 1 && rowIndex >= 1) && (itemIndex < gameState.length-1 && rowIndex < gameState.length-1)) && <SOSStrike variant='vertical' />}
               {((itemIndex >= 1 && rowIndex >= 1) && (itemIndex < gameState.length-1 && rowIndex < gameState.length-1)) && <SOSStrike variant='diagonalX' />}
               {((itemIndex >= 1 && rowIndex >= 1) && (itemIndex < gameState.length-1 && rowIndex < gameState.length-1)) && <SOSStrike variant='diagonalY' />}
               {((itemIndex == 0 || itemIndex == gameState.length-1) && (rowIndex >= 1 && rowIndex < gameState.length-1)) && <SOSStrike variant='vertical' />}
               {((rowIndex == 0 || rowIndex == gameState.length-1) && (itemIndex >= 1 && itemIndex < gameState.length-1)) && <SOSStrike variant='horizontal' />} */}
-
               </View>
-              
             ))}
           </View>
         ))}
-
       </View>
     </View>
   );

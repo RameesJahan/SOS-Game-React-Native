@@ -8,7 +8,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        "sos-green": "#6cee2b",
+        "sos-green": "#05df72",
         "sos-ink": "#0a0a0a",
       },
       borderWidth: {

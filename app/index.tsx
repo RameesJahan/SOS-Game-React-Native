@@ -437,18 +437,7 @@ const App = (props: Props) => {
                 >
                   SOUND
                 </Text>
-                <SOSStyledButton
-                  onPress={() => setIsSoundOn(!isSoundOn)}
-                  selected={isSoundOn}
-                >
-                  <MaterialCommunityIcons
-                    name="volume-high"
-                    size={38}
-                    color={
-                      isSoundOn ? Colors.light.sosGreen : Colors.light.sosInk
-                    }
-                  />
-                </SOSStyledButton>
+                <SOSSoundButton />
               </View>
               {/* COLUMNS */}
               {/* <View className="flex-1 items-center justify-between">

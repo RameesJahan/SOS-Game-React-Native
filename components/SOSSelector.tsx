@@ -1,48 +1,55 @@
-import { View, Text, Pressable } from 'react-native'
-import React from 'react'
-import { SOSSlot } from '@/types/types'
-import { useSavedColor } from '@/hooks/useSavedColor'
+import { Colors } from "@/constants/Colors";
+import { useSavedColor } from "@/hooks/useSavedColor";
+import { SOSSlot } from "@/types/types";
+import React from "react";
+import { Pressable, Text, View } from "react-native";
 
 type SOSSelectorProps = {
-  selected: SOSSlot
-  onSelect: (x: SOSSlot) => void
-}
-
+  selected: SOSSlot;
+  onSelect: (x: SOSSlot) => void;
+};
 
 const SOSSelector = ({ selected, onSelect }: SOSSelectorProps) => {
-
-  const colorScheme = useSavedColor()
+  const colorScheme = useSavedColor();
 
   return (
     <View className="flex flex-row p-12 gap-3">
-      <Pressable 
-        className={`flex-1 aspect-square border rounded-md items-center justify-center ${selected == SOSSlot.S ? "bg-gray-700" : ""} `} 
+      <Pressable
+        className={`flex-1 aspect-square rounded-tr-md rounded-bl-md items-center justify-center ${selected == SOSSlot.S ? "bg-sos-green/20 sos-border-selected" : "bg-white sos-border"} `}
         onPress={() => onSelect(SOSSlot.S)}
-        style={{ borderColor : 'black' }}
-        >
-        <Text 
+      >
+        <Text
           className={`text-[64px]`}
-          style={{  
-            color : selected == SOSSlot.S ? "white" : 'black',
-            fontFamily: "Tempus-Sans"
-           }}
-          >S</Text>
+          style={{
+            color:
+              selected == SOSSlot.S
+                ? Colors.light.sosGreen
+                : Colors.light.sosInk,
+            fontFamily: "Tempus-Sans",
+          }}
+        >
+          S
+        </Text>
       </Pressable>
       <Pressable
-        className={`flex-1 aspect-square border rounded-md items-center justify-center ${selected == SOSSlot.O ? "bg-gray-700" : ""}`} 
+        className={`flex-1 aspect-square rounded-tr-md rounded-bl-md items-center justify-center ${selected == SOSSlot.O ? "bg-sos-green/20 sos-border-selected" : "bg-white sos-border"} `}
         onPress={() => onSelect(SOSSlot.O)}
-        style={{ borderColor : 'black' }}
-        >
-        <Text 
+      >
+        <Text
           className={`text-[64px]`}
-          style={{  
-            color : selected == SOSSlot.O ? "white" : 'black',
-            fontFamily : "Tempus-Sans"
-           }}
-          >O</Text>
+          style={{
+            color:
+              selected == SOSSlot.O
+                ? Colors.light.sosGreen
+                : Colors.light.sosInk,
+            fontFamily: "Tempus-Sans",
+          }}
+        >
+          O
+        </Text>
       </Pressable>
     </View>
-  )
-}
+  );
+};
 
-export default SOSSelector
+export default SOSSelector;

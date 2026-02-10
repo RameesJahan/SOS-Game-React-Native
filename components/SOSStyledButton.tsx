@@ -11,16 +11,23 @@ type Props = {
   title?: string;
   selected?: boolean;
   children?: React.ReactNode;
+  containerClassName?: string;
 } & PressableProps;
 
-const SOSStyledButton = ({ title, selected, children, ...props }: Props) => {
+const SOSStyledButton = ({
+  title,
+  selected,
+  children,
+  containerClassName,
+  ...props
+}: Props) => {
   return (
     <Pressable
       {...props}
       android_ripple={{ color: "gray" }}
       className={`p-3 rounded-tr-md rounded-bl-md ${
         selected ? "sos-border-selected" : "sos-border"
-      }`}
+      } ${containerClassName}`}
     >
       {children}
     </Pressable>

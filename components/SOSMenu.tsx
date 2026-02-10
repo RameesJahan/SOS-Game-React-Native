@@ -7,7 +7,7 @@ type Props = {
 
 const SOSMenu = ({ title,children }: PropsWithChildren<Props>) => {
   return (
-    <View className='w-3/4 rounded-md overflow-hidden border'>
+    <View className='w-3/4 rounded-md overflow-hidden'>
       <ImageBackground
           className="flex justify-center items-center p-4"
           source={require("@/assets/images/paper-bg.jpg")}
