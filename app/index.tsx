@@ -2,7 +2,6 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { router, SplashScreen, useFocusEffect } from "expo-router";
 import React, { useCallback, useEffect } from "react";
 import {
-  Alert,
   Dimensions,
   ImageBackground,
   Pressable,
@@ -12,6 +11,7 @@ import {
   TextInput,
   View,
 } from "react-native";
+import CustomModal from "@/components/CustomModal";
 
 import IMGPaperBg from "@/assets/images/paper-bg.jpg";
 import SOSNoPlayersSelector from "@/components/SOSNoPlayersSelector";
@@ -80,6 +80,23 @@ const App = (props: Props) => {
     "DIFFICULTY",
     AIDifficulty.EASY,
   );
+
+  const [modalConfig, setModalConfig] = React.useState<{
+    visible: boolean;
+    title: string;
+    message: string;
+    buttons?: {
+      text: string;
+      style?: "default" | "cancel" | "destructive";
+      onPress?: () => void;
+    }[];
+  }>({
+    visible: false,
+    title: "",
+    message: "",
+  });
+
+  const hideModal = () => setModalConfig({ ...modalConfig, visible: false });
   // const [isMusicOn, setIsMusicOn, isLoading] = useSavedState<boolean>("IS_MUSIC", true);
   const { isSoundOn, setIsSoundOn, isLoading } = useSoundContext();
 
@@ -117,6 +134,20 @@ const App = (props: Props) => {
 
   const handlePlayerTypeToggle = (index: number) => {
     const arr = [...playersList];
+
+    if (!arr[index].isAi) {
+      const humanPlayers = arr.filter((p) => !p.isAi).length;
+      if (humanPlayers <= 1) {
+        setModalConfig({
+          visible: true,
+          title: "Invalid Action",
+          message: "At least one player must be human.",
+          buttons: [{ text: "OK", onPress: hideModal }],
+        });
+        return;
+      }
+    }
+
     arr[index].isAi = !arr[index].isAi;
     setPlayersList(arr);
   };
@@ -124,13 +155,16 @@ const App = (props: Props) => {
   const showRatingDialog = () => {
     if (InAppReview.isAvailable()) {
       console.log("Rating", rating);
-      Alert.alert(
-        "Rate SOS Game",
-        "If you have any feedback, please rate it on Play Store. It helps us a lot. \nThanks for your support! 🙏🏻",
-        [
+      setModalConfig({
+        visible: true,
+        title: "Rate SOS Game",
+        message:
+          "If you have any feedback, please rate it on Play Store. It helps us a lot. \nThanks for your support! 🙏🏻",
+        buttons: [
           {
             text: "Rate Now",
             onPress: () => {
+              hideModal();
               InAppReview.RequestInAppReview();
             },
           },
@@ -139,6 +173,7 @@ const App = (props: Props) => {
             style: "cancel",
             onPress: () => {
               setRating("done");
+              hideModal();
             },
           },
           {
@@ -146,10 +181,11 @@ const App = (props: Props) => {
             style: "cancel",
             onPress: () => {
               setRating("done");
+              hideModal();
             },
           },
         ],
-      );
+      });
     }
   };
 
@@ -188,7 +224,12 @@ const App = (props: Props) => {
           \nhttps://play.google.com/store/apps/details?id=com.kaakkagames.SOSGame`,
       });
       if (result.action === Share.sharedAction) {
-        Alert.alert("Thanks for sharing!");
+        setModalConfig({
+          visible: true,
+          title: "Thanks for sharing!",
+          message: "We appreciate your support.",
+          buttons: [{ text: "OK", onPress: hideModal }],
+        });
         if (result.activityType) {
           // shared with activity type of result.activityType
         } else {
@@ -204,6 +245,13 @@ const App = (props: Props) => {
 
   return (
     <View className="flex-1 bg-white">
+      <CustomModal
+        visible={modalConfig.visible}
+        title={modalConfig.title}
+        message={modalConfig.message}
+        buttons={modalConfig.buttons}
+        onClose={hideModal}
+      />
       <ImageBackground className="flex-1" source={IMGPaperBg}>
         <SafeAreaView className="flex-1">
           <ScrollView
@@ -220,12 +268,24 @@ const App = (props: Props) => {
               )}
               <View className="items-center py-2 flex flex-row justify-between gap-x-2">
                 <SOSHomeLogo />
-                <SOSStyledButton
-                  containerClassName="bg-white w-16 h-16 items-center justify-center"
-                  onPress={() => router.push("/about")}
-                >
-                  <FontAwesome5 name="info" size={24} color="black" />
-                </SOSStyledButton>
+                <View className="flex flex-row gap-x-2">
+                  <SOSStyledButton
+                    containerClassName="bg-white w-16 h-16 items-center justify-center"
+                    onPress={() => router.push("/about")}
+                  >
+                    <FontAwesome5 name="info" size={24} color="black" />
+                  </SOSStyledButton>
+                  <SOSStyledButton
+                    containerClassName="bg-white w-16 h-16 items-center justify-center"
+                    onPress={onShare}
+                  >
+                    <MaterialCommunityIcons
+                      name="share-variant"
+                      size={24}
+                      color="black"
+                    />
+                  </SOSStyledButton>
+                </View>
               </View>
               {/* How many players */}
               <View className="w-full mb-6">
@@ -354,20 +414,30 @@ const App = (props: Props) => {
                         Ink:
                       </Text>
                       <View className="flex-row gap-1.5">
-                        {PlayerDataColors.map((color) => (
-                          <Pressable
-                            key={color}
-                            onPress={() =>
-                              handlePlayerColorChange(index, color)
-                            }
-                            className={`w-7 h-7 rounded-full border-2 ${
-                              player.color === color
-                                ? "border-sos-green"
-                                : "border-sos-ink"
-                            }`}
-                            style={{ backgroundColor: color }}
-                          />
-                        ))}
+                        {PlayerDataColors.map((color) => {
+                          const isColorSelectedByOther = playersList.some(
+                            (p, i) => i !== index && p.color === color,
+                          );
+
+                          return (
+                            <Pressable
+                              key={color}
+                              disabled={isColorSelectedByOther}
+                              onPress={() =>
+                                handlePlayerColorChange(index, color)
+                              }
+                              className={`w-7 h-7 rounded-full border-2 ${
+                                player.color === color
+                                  ? "border-sos-green"
+                                  : "border-sos-ink"
+                              }`}
+                              style={{
+                                backgroundColor: color,
+                                opacity: isColorSelectedByOther ? 0.3 : 1,
+                              }}
+                            />
+                          );
+                        })}
                       </View>
                     </View>
                   </View>

@@ -5,6 +5,7 @@ import SOSSelector from "@/components/SOSSelector";
 import SOSSoundButton from "@/components/SOSSoundButton";
 import SOSStyledButton from "@/components/SOSStyledButton";
 import SOSWinnerDialog, { WinnerCloseType } from "@/components/SOSWinnerDialog";
+import CustomModal from "@/components/CustomModal";
 import { useSavedState } from "@/hooks/useSavedState";
 import {
   cell,
@@ -70,6 +71,23 @@ const Game = () => {
   const [rating, setRating] = useSavedState<string>("RATING", "asked");
   const [showPressEffect, setShowPressEffect] = useState<cell | null>(null);
 
+  const [modalConfig, setModalConfig] = useState<{
+    visible: boolean;
+    title: string;
+    message: string;
+    buttons?: {
+      text: string;
+      style?: "default" | "cancel" | "destructive";
+      onPress?: () => void;
+    }[];
+  }>({
+    visible: false,
+    title: "",
+    message: "",
+  });
+
+  const hideModal = () => setModalConfig({ ...modalConfig, visible: false });
+
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       "hardwareBackPress",
@@ -122,7 +140,12 @@ const Game = () => {
       console.log("Selected:", selected);
       if (!slot && selected == SOSSlot.E) {
         //if it's not selected
-        alert("Please select S or O");
+        setModalConfig({
+          visible: true,
+          title: "Action Required",
+          message: "Please select S or O before placing your move.",
+          buttons: [{ text: "OK", onPress: hideModal }],
+        });
         return;
       }
 
@@ -231,7 +254,17 @@ const Game = () => {
       className="flex-1"
       source={require("@/assets/images/paper-bg.jpg")}
     >
-      <View className="flex-1" style={{ backgroundColor: `${players[currentTurn].color}1d` }}>
+      <CustomModal
+        visible={modalConfig.visible}
+        title={modalConfig.title}
+        message={modalConfig.message}
+        buttons={modalConfig.buttons}
+        onClose={hideModal}
+      />
+      <View
+        className="flex-1"
+        style={{ backgroundColor: `${players[currentTurn].color}1d` }}
+      >
         <SafeAreaView className="flex-1">
           <ScrollView className="flex-1">
             {SHOW_ADS && (
