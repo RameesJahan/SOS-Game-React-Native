@@ -1,3 +1,4 @@
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { router, SplashScreen, useFocusEffect } from "expo-router";
 import React, { useCallback, useEffect } from "react";
 import {
@@ -11,27 +12,25 @@ import {
   TextInput,
   View,
 } from "react-native";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
 import IMGPaperBg from "@/assets/images/paper-bg.jpg";
-import SOSHomePlayers from "@/components/SOSHomePlayers";
 import SOSNoPlayersSelector from "@/components/SOSNoPlayersSelector";
 import { PlayerData } from "@/types/types";
 
 // import { Audio } from "expo-av";
 import SOSDifficultySelector from "@/components/SOSDifficultySelector";
+import SOSHomeLogo from "@/components/SOSHomeLogo";
 import SOSSoundButton from "@/components/SOSSoundButton";
-import { useSoundContext } from "@/context/sound-context";
-import { useSavedState } from "@/hooks/useSavedState";
-import { AIDifficulty } from "@/utils/AILogic";
-import InAppReview from "react-native-in-app-review";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { BannerAd, BannerAdSize } from "react-native-google-mobile-ads";
-import { BANNER_AD_UNIT_ID, SHOW_ADS } from "@/utils/AdHelpers";
 import SOSStyledButton from "@/components/SOSStyledButton";
 import { Colors } from "@/constants/Colors";
-import SOSHomeLogo from "@/components/SOSHomeLogo";
+import { useSoundContext } from "@/context/sound-context";
+import { useSavedState } from "@/hooks/useSavedState";
+import { BANNER_AD_UNIT_ID, SHOW_ADS } from "@/utils/AdHelpers";
+import { AIDifficulty } from "@/utils/AILogic";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import { BannerAd, BannerAdSize } from "react-native-google-mobile-ads";
+import InAppReview from "react-native-in-app-review";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 SplashScreen.preventAutoHideAsync();
 

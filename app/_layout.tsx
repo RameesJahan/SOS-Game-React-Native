@@ -1,5 +1,5 @@
-import { PermissionStatus, requestAuthorization } from "@/utils/AdHelpers";
 import "../global.css";
+import { PermissionStatus, requestAuthorization } from "@/utils/AdHelpers";
 import { SoundContextProvider } from "@/context/sound-context";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
