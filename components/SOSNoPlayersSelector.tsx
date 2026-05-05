@@ -9,13 +9,13 @@ type Props = {
 const SOSNoPlayersSelector = ({ selected, onSelect }: Props) => {
   const arr = new Array(6).fill(0); // 2P, 3P, 4P, 5P
   return (
-    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-      <View className="flex flex-row justify-center items-center gap-2 w-full">
+    <View>
+      <View className="flex flex-row flex-wrap justify-center items-center gap-2 w-full">
         {arr.map((_, index) => (
           <Pressable
             key={index}
             className={
-              "rounded-xl items-center justify-center py-3 px-7 " +
+              "flex-1 basis-1/3 rounded-xl items-center justify-center py-3 px-7 " +
               (selected === index
                 ? "bg-sos-green/20 sos-border-selected"
                 : "bg-white sos-border")
@@ -31,7 +31,7 @@ const SOSNoPlayersSelector = ({ selected, onSelect }: Props) => {
           </Pressable>
         ))}
       </View>
-    </ScrollView>
+    </View>
   );
 };
 

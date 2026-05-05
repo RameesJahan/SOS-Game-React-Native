@@ -1,11 +1,7 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
-import React from "react";
 import { AIDifficulty } from "@/utils/AILogic";
-import Animated, {
-  FadeInUp,
-  FadeOut,
-  LinearTransition,
-} from "react-native-reanimated";
+import React from "react";
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
 
 type SOSDifficultySelectorProps = {
   disabled: boolean;
@@ -21,8 +17,8 @@ const SOSDifficultySelector = ({
   return (
     <Animated.View
       className={`w-full ${disabled ? "opacity-50" : ""}`}
-      entering={FadeInUp}
-      exiting={FadeOut}
+      entering={FadeInDown}
+      exiting={FadeInUp}
     >
       <View className="flex-row rounded-md border-2 border-gray-200 overflow-hidden bg-gray-200 gap-2">
         <Pressable
