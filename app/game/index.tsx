@@ -263,7 +263,7 @@ const Game = () => {
       />
       <View
         className="flex-1"
-        style={{ backgroundColor: `${players[currentTurn].color}1d` }}
+        // style={{ backgroundColor: `${players[currentTurn].color}1d` }}
       >
         <SafeAreaView className="flex-1">
           <ScrollView className="flex-1">
