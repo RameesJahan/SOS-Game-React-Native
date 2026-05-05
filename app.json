@@ -33,7 +33,9 @@
       [
         "expo-font",
         {
-          "fonts": ["./assets/fonts/Tempus-Sans.ttf"]
+          "fonts": [
+            "./assets/fonts/Tempus-Sans.ttf"
+          ]
         }
       ],
       [
@@ -42,7 +44,11 @@
           "androidAppId": "ca-app-pub-2941930161933702~9557920968"
         }
       ],
-      "expo-tracking-transparency"
+      "expo-tracking-transparency",
+      "expo-audio",
+      "expo-image",
+      "expo-web-browser",
+      "expo-asset"
     ],
     "experiments": {
       "typedRoutes": true
