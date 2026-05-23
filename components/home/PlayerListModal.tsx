@@ -25,6 +25,7 @@ import CustomModal from "../CustomModal";
 import { ImageBackground } from "expo-image";
 import IMGPaperBg from "@/assets/images/paper-bg.jpg";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { useAdContext } from "@/context/ad-context";
 import Animated, {
   AnimatedStyle,
   FadeInDown,
@@ -56,6 +57,7 @@ const PlayerListModal = ({
   onPlayersUpdate,
   ...props
 }: PlayerListModalProps) => {
+  const { isAdFree } = useAdContext();
   const insets = useSafeAreaInsets();
   const [modalConfig, setModalConfig] = React.useState<{
     visible: boolean;
@@ -126,28 +128,28 @@ const PlayerListModal = ({
         <ScrollView
           style={{ marginTop: insets.top }}
           className="flex-1"
-          contentContainerClassName="px-4 pt-2 pb-6"
+          contentContainerClassName="pt-2 pb-6"
         >
-          {SHOW_ADS && (
+          {SHOW_ADS && !isAdFree && (
             <BannerAd
               size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
               unitId={BANNER_AD_UNIT_ID}
             />
           )}
-          <View className="flex-row items-center mb-3">
+          <View className="flex-row items-center mt-4 mb-3 px-4">
             <MaterialCommunityIcons
               name="account-box-edit-outline"
-              size={20}
+              size={30}
               color="#0a0a0a"
             />
             <Text
-              className="text-lg text-sos-ink ml-2"
+              className="text-3xl text-sos-ink ml-2"
               style={{ fontFamily: "Tempus-Sans" }}
             >
               Customize Players
             </Text>
           </View>
-          <View className="w-full mb-6">
+          <View className="w-full mb-6 px-4">
             {playersList.map((player, index) => (
               <PlayerCard
                 key={index}
@@ -160,7 +162,7 @@ const PlayerListModal = ({
               />
             ))}
           </View>
-          {SHOW_ADS && (
+          {SHOW_ADS && !isAdFree && (
             <BannerAd
               size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
               unitId={BANNER_AD_UNIT_ID}

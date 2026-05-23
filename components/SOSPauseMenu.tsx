@@ -1,5 +1,6 @@
 import { BANNER_AD_UNIT_ID, SHOW_ADS } from "@/utils/AdHelpers";
-import React from "react";
+import { useAdContext } from "@/context/ad-context";
+import React, { useState } from "react";
 import { View } from "react-native";
 import { BannerAd, BannerAdSize } from "react-native-google-mobile-ads";
 import SOSMenu from "./SOSMenu";
@@ -18,9 +19,16 @@ export enum PauseCloseType {
 }
 
 const BannerContainer = () => {
-  return SHOW_ADS ? (
-    <View className="my-[12px]">
+  const [width, setWidth] = useState(0)
+  const { isAdFree } = useAdContext();
+
+  return SHOW_ADS && !isAdFree ? (
+    <View onLayout={(event) => {
+      const { width } = event.nativeEvent.layout
+      setWidth(width)
+    }} className="flex-row my-[12px]">
       <BannerAd
+        width={width}
         size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
         unitId={BANNER_AD_UNIT_ID}
       />

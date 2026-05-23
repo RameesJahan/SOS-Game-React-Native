@@ -6,6 +6,7 @@ import SOSSoundButton from "@/components/SOSSoundButton";
 import SOSStyledButton from "@/components/SOSStyledButton";
 import SOSWinnerDialog, { WinnerCloseType } from "@/components/SOSWinnerDialog";
 import CustomModal from "@/components/CustomModal";
+import { useAdContext } from "@/context/ad-context";
 import { useSavedState } from "@/hooks/useSavedState";
 import {
   cell,
@@ -45,6 +46,7 @@ const getJsonData = <T,>(x: string): T => {
 };
 
 const Game = () => {
+  const { isAdFree } = useAdContext();
   const { data } = useLocalSearchParams();
   const { noRow, playersList, difficulty } = getJsonData<{
     noRow: string;
@@ -267,7 +269,7 @@ const Game = () => {
       >
         <SafeAreaView className="flex-1">
           <ScrollView className="flex-1">
-            {SHOW_ADS && (
+            {SHOW_ADS && !isAdFree && (
               <BannerAd
                 size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
                 unitId={BANNER_AD_UNIT_ID}
@@ -291,7 +293,7 @@ const Game = () => {
               showPressEffect={showPressEffect}
             />
             <SOSSelector selected={selected} onSelect={setSelected} />
-            {SHOW_ADS && (
+            {SHOW_ADS && !isAdFree && (
               <View className="justify-center items-center">
                 <BannerAd
                   size={BannerAdSize.MEDIUM_RECTANGLE}

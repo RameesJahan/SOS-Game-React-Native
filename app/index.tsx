@@ -24,6 +24,7 @@ import SOSSoundButton from "@/components/SOSSoundButton";
 import SOSStyledButton from "@/components/SOSStyledButton";
 import { Colors } from "@/constants/Colors";
 import { useSoundContext } from "@/context/sound-context";
+import { useAdContext } from "@/context/ad-context";
 import { useSavedState } from "@/hooks/useSavedState";
 import { BANNER_AD_UNIT_ID, SHOW_ADS } from "@/utils/AdHelpers";
 import { AIDifficulty } from "@/utils/AILogic";
@@ -71,6 +72,7 @@ const MAX_ROW = getMaxRow();
 const MAX_COL = getMaxRow(); // Same logic for columns
 
 const App = (props: Props) => {
+  const { isAdFree } = useAdContext();
   const insets = useSafeAreaInsets();
   const [noRow, setNoRow] = useSavedState<number>("NO_OF_ROW", 8);
   const [noCol, setNoCol] = useSavedState<number>("NO_OF_COL", 10);
@@ -252,6 +254,7 @@ const App = (props: Props) => {
 
   const onRemoveAds = () => {
     // presentPaywallIfNeeded();
+    router.push('/remove-ads');
   };
 
   const handleStartGame = () => {
@@ -285,13 +288,13 @@ const App = (props: Props) => {
             contentContainerStyle={{ flexGrow: 1 }}
             showsVerticalScrollIndicator={false}
           >
+            {SHOW_ADS && !isAdFree && (
+              <BannerAd
+                size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+                unitId={BANNER_AD_UNIT_ID}
+              />
+            )}
             <View className="flex flex-col px-4 pb-6">
-              {SHOW_ADS && (
-                <BannerAd
-                  size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
-                  unitId={BANNER_AD_UNIT_ID}
-                />
-              )}
               <View className="items-center py-2 flex flex-row justify-between gap-x-2">
                 <SOSHomeLogo />
                 <View className="flex flex-row gap-x-2">
@@ -466,6 +469,12 @@ const App = (props: Props) => {
               </Pressable>
             </View>
           </View>
+          {SHOW_ADS && !isAdFree && (
+            <BannerAd
+              size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+              unitId={BANNER_AD_UNIT_ID}
+            />
+          )}
         </SafeAreaView>
       </ImageBackground>
       <PlayerListModal

@@ -1,6 +1,7 @@
 import "../global.css";
 import { PermissionStatus, requestAuthorization } from "@/utils/AdHelpers";
 import { SoundContextProvider } from "@/context/sound-context";
+import { AdProvider } from "@/context/ad-context";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect } from "react";
@@ -19,10 +20,12 @@ const AppLayout = () => {
   }, []);
 
   return (
-    <SoundContextProvider>
-      <StatusBar hidden />
-      <Stack screenOptions={{ headerShown: false, animation: "simple_push" }} />
-    </SoundContextProvider>
+    <AdProvider>
+      <SoundContextProvider>
+        <StatusBar hidden />
+        <Stack screenOptions={{ headerShown: false, animation: "simple_push" }} />
+      </SoundContextProvider>
+    </AdProvider>
   );
 };
 
