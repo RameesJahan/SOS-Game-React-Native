@@ -188,7 +188,7 @@ const PlayerListModal = ({
                 className="text-3xl text-sos-ink uppercase tracking-wide"
                 style={{ fontFamily: "Tempus-Sans" }}
               >
-                START
+                {"START "}
               </Text>
             </Pressable>
           </View>

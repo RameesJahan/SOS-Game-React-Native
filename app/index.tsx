@@ -1,3 +1,4 @@
+import CustomModal from "@/components/CustomModal";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { router, SplashScreen, useFocusEffect } from "expo-router";
 import React, { useCallback, useEffect } from "react";
@@ -8,17 +9,16 @@ import {
   ScrollView,
   Share,
   Text,
-  TextInput,
-  View,
+  View
 } from "react-native";
-import CustomModal from "@/components/CustomModal";
 
 import IMGPaperBg from "@/assets/images/paper-bg.jpg";
 import SOSNoPlayersSelector from "@/components/SOSNoPlayersSelector";
 import { PlayerData } from "@/types/types";
 
 // import { Audio } from "expo-av";
-import SOSDifficultySelector from "@/components/SOSDifficultySelector";
+import MenuModal from "@/components/home/MenuModal";
+import PlayerListModal from "@/components/home/PlayerListModal";
 import SOSHomeLogo from "@/components/SOSHomeLogo";
 import SOSSoundButton from "@/components/SOSSoundButton";
 import SOSStyledButton from "@/components/SOSStyledButton";
@@ -27,14 +27,12 @@ import { useSoundContext } from "@/context/sound-context";
 import { useSavedState } from "@/hooks/useSavedState";
 import { BANNER_AD_UNIT_ID, SHOW_ADS } from "@/utils/AdHelpers";
 import { AIDifficulty } from "@/utils/AILogic";
-import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { BannerAd, BannerAdSize } from "react-native-google-mobile-ads";
 import InAppReview from "react-native-in-app-review";
 import {
   SafeAreaView,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
-import PlayerListModal from "@/components/home/PlayerListModal";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -87,6 +85,7 @@ const App = (props: Props) => {
   );
 
   const [showPlayerListModal, setShowPlayerListModal] = React.useState(false);
+  const [menuVisible, setMenuVisible] = React.useState(false);
 
   const [modalConfig, setModalConfig] = React.useState<{
     visible: boolean;
@@ -238,6 +237,7 @@ const App = (props: Props) => {
           buttons: [{ text: "OK", onPress: hideModal }],
         });
         if (result.activityType) {
+          console.log(result.activityType);
           // shared with activity type of result.activityType
         } else {
           // shared
@@ -250,7 +250,12 @@ const App = (props: Props) => {
     }
   };
 
+  const onRemoveAds = () => {
+    // presentPaywallIfNeeded();
+  };
+
   const handleStartGame = () => {
+    setShowPlayerListModal(false);
     router.push({
       pathname: "/game",
       params: {
@@ -298,7 +303,7 @@ const App = (props: Props) => {
                   </SOSStyledButton> */}
                   <SOSStyledButton
                     containerClassName="bg-white w-16 h-16 items-center justify-center"
-                    onPress={onShare}
+                    onPress={() => setMenuVisible(true)}
                   >
                     <MaterialCommunityIcons
                       name="menu"
@@ -471,6 +476,22 @@ const App = (props: Props) => {
         setDifficulty={setDifficulty}
         onPlayersUpdate={setPlayersList}
         onPressStartGame={handleStartGame}
+      />
+      <MenuModal
+        visible={menuVisible}
+        onClose={() => setMenuVisible(false)}
+        onRemoveAds={() => {
+          onRemoveAds();
+          setMenuVisible(false);
+        }}
+        onShare={() => {
+          onShare();
+          setMenuVisible(false);
+        }}
+        onInfo={() => {
+          router.push("/about");
+          setMenuVisible(false);
+        }}
       />
     </View>
   );
