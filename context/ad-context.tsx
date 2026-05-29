@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useSavedState } from "@/hooks/useSavedState";
 
 interface AdContextType {
@@ -28,7 +28,12 @@ export const AdProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const [isAdFree, setIsAdFree] = useState(false);
 
+  // Keep track of latest state for the event listeners without causing re-renders
+  const stateRef = useRef({ isAdFree, watchedAdsCount, adFreeUntil });
+
   useEffect(() => {
+    console.log(isAdFree, 'isAdFree');
+    console.log(adFreeUntil, 'adFreeUntil');
     if (adFreeUntil !== null) {
       setIsAdFree(Date.now() < adFreeUntil);
     } else {
@@ -36,26 +41,38 @@ export const AdProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, [adFreeUntil]);
 
-  const recordAdWatched = () => {
+  useEffect(() => {
+    stateRef.current = { isAdFree, watchedAdsCount, adFreeUntil };
+  }, [isAdFree, watchedAdsCount, adFreeUntil]);
+
+  const recordAdWatched = useCallback(() => {
     const now = Date.now();
     const TWO_DAYS_MS = 2 * 24 * 60 * 60 * 1000;
     const SIX_DAYS_MS = 6 * 24 * 60 * 60 * 1000;
 
-    if (adFreeUntil && now < adFreeUntil) {
+    const { watchedAdsCount: currentCount, adFreeUntil: currentAdFreeUntil } = stateRef.current;
+
+
+    if (currentAdFreeUntil && now < currentAdFreeUntil) {
+      console.log("Ad free is active , extending by 2 days");
       // Feature already activated, extend by 2 days
-      setAdFreeUntil(adFreeUntil + TWO_DAYS_MS);
+      setAdFreeUntil(currentAdFreeUntil + TWO_DAYS_MS);
     } else {
+      console.log('[recordadwatched]watchedAdsCount', currentCount);
       // Not activated yet
-      if (watchedAdsCount + 1 >= 3) {
-        // Activate for 6 days
+      if (currentCount + 1 >= 3) {
+        console.log("Ad free is not active , activating for 6 days");
+        // Activate for 6 days'
+        setIsAdFree(true);
         setAdFreeUntil(now + SIX_DAYS_MS);
         setWatchedAdsCount(0); // Reset for future
       } else {
+        console.log("Ad free is not active , incrementing watched ads count");
         // Just increment
-        setWatchedAdsCount(watchedAdsCount + 1);
+        setWatchedAdsCount((prev) => prev + 1);
       }
     }
-  };
+  }, []);
 
   const isLoading = isLoadingAdFree || isLoadingWatchedAds;
 

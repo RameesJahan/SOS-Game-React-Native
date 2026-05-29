@@ -223,6 +223,10 @@ const App = (props: Props) => {
     if (!isLoading) SplashScreen.hideAsync();
   }, [isLoading]);
 
+  useEffect(() => {
+    console.log("[useeffect] noRow, playersList, difficulty", noRow, playersList, difficulty);
+  }, [noRow, playersList, difficulty]);
+
   const onShare = async () => {
     try {
       const result = await Share.share({
@@ -259,6 +263,7 @@ const App = (props: Props) => {
 
   const handleStartGame = () => {
     setShowPlayerListModal(false);
+    console.log("noRow, playersList, difficulty", noRow, playersList, difficulty);
     router.push({
       pathname: "/game",
       params: {
@@ -305,7 +310,7 @@ const App = (props: Props) => {
                     <FontAwesome5 name="menu" size={24} color="black" />
                   </SOSStyledButton> */}
                   <SOSStyledButton
-                    containerClassName="bg-white w-16 h-16 items-center justify-center"
+                    containerClassName="w-16 h-16 items-center justify-center"
                     onPress={() => setMenuVisible(true)}
                   >
                     <MaterialCommunityIcons

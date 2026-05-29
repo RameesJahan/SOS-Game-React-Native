@@ -7,10 +7,13 @@ export const useSavedState = <T>(key: string, initialValue: T) => {
 
   const setValue = async (val: React.SetStateAction<T>) => {
     let S;
-    if(val instanceof Function) {
-      setStateValue(val(value))
-      S = val(value)
-    }else {
+
+    if (val instanceof Function) {
+      setStateValue((prev) => {
+        S = val(prev)
+        return S
+      })
+    } else {
       setStateValue(val)
       S = val
     }
@@ -21,7 +24,7 @@ export const useSavedState = <T>(key: string, initialValue: T) => {
       console.log(e)
     }
   }
-  
+
 
   React.useEffect(() => {
     const loadData = async () => {
@@ -30,9 +33,9 @@ export const useSavedState = <T>(key: string, initialValue: T) => {
         if (jsonValue != null) {
           const data = JSON.parse(jsonValue)
           setStateValue(data.data)
-        }   
+        }
         setIsLoading(false)
-      } catch(e) {
+      } catch (e) {
         console.log(e)
       }
     }

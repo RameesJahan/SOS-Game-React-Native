@@ -25,13 +25,13 @@ const SOSWinnerDialog = ({ visible, onClose, winner }: Props) => {
     >
       <SOSMenu title={winner.length > 1 ? "Winners" : "Winner"}>
         <View className="w-full aspect-square p-2">
-          <ImageBackground 
-            className="w-full h-full items-center justify-center" 
+          <ImageBackground
+            className="w-full h-full items-center justify-center"
             source={require("@/assets/images/ic-trophy.png")}
-            imageStyle={{ resizeMode: "contain", opacity: 0.1 }}
-            >
-            <Text className="text-3xl text-center" style={{ fontFamily: "Tempus-Sans" }}>
-              { winner.length > 1 ? winner.join("\n") : winner[0]}
+            imageStyle={{ resizeMode: "contain", opacity: 0.04 }}
+          >
+            <Text className="text-3xl text-center" style={{ fontFamily: "Tempus-Sans", lineHeight: 48 }}>
+              {winner.length > 1 ? winner.map(w => w + " 🏆").join("\n") : winner[0] + " 🏆"}
             </Text>
           </ImageBackground>
         </View>

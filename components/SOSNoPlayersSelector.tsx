@@ -17,7 +17,7 @@ const SOSNoPlayersSelector = ({ selected, onSelect }: Props) => {
             className={
               "flex-1 basis-1/3 rounded-xl items-center justify-center py-3 px-7 " +
               (selected === index
-                ? "bg-sos-green/20 sos-border-selected"
+                ? "bg-[#d3f5e4] sos-border-selected"
                 : "bg-white sos-border")
             }
             onPress={() => onSelect(index)}

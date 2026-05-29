@@ -53,6 +53,7 @@ const Game = () => {
     playersList: PlayerData[];
     difficulty: AIDifficulty;
   }>(data as string);
+  console.log(noRow, 'noRow', playersList, 'playersList', difficulty, 'difficulty');
   const [gameState, setGameState] = useState<GameState>(
     createGameState(Number(noRow)),
   );
@@ -265,7 +266,7 @@ const Game = () => {
       />
       <View
         className="flex-1"
-        // style={{ backgroundColor: `${players[currentTurn].color}1d` }}
+      // style={{ backgroundColor: `${players[currentTurn].color}1d` }}
       >
         <SafeAreaView className="flex-1">
           <ScrollView className="flex-1">
@@ -278,7 +279,6 @@ const Game = () => {
             <View className="flex flex-row items-center justify-end gap-x-[12px] p-4">
               <SOSSoundButton size={28} />
               <SOSStyledButton
-                containerClassName="bg-white"
                 onPress={() => setShowPause(true)}
               >
                 <Ionicons name="pause" size={28} color="black" />

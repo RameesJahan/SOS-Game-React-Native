@@ -10,7 +10,7 @@ const SOSSoundButton = ({ size = 38 }: { size?: number }) => {
   const { isSoundOn, setIsSoundOn } = useSoundContext();
   return (
     <SOSStyledButton
-      containerClassName="bg-white"
+      key={`sound-button-${isSoundOn}`}
       onPress={() => setIsSoundOn(!isSoundOn)}
       selected={isSoundOn}
     >

@@ -2,8 +2,6 @@ import {
   Pressable,
   PressableProps,
   StyleSheet,
-  Text,
-  View,
 } from "react-native";
 import React from "react";
 
@@ -19,15 +17,20 @@ const SOSStyledButton = ({
   selected,
   children,
   containerClassName,
+  className,
   ...props
 }: Props) => {
+  console.log("[SOSStyledButton]selected", selected);
+  const getClassName = (isSelected?: boolean) => {
+    return isSelected ? "p-3 rounded-md bg-[#d3f5e4] sos-border-selected" : "p-3 rounded-md bg-white sos-border"
+  }
+  console.log(getClassName(selected))
   return (
+
     <Pressable
+      className={`${getClassName(selected)} ${containerClassName}`}
       {...props}
       android_ripple={{ color: "gray" }}
-      className={`p-3 rounded-tr-md rounded-bl-md ${
-        selected ? "sos-border-selected" : "sos-border"
-      } ${containerClassName}`}
     >
       {children}
     </Pressable>

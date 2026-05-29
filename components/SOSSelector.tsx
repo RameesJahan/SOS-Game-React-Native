@@ -15,7 +15,7 @@ const SOSSelector = ({ selected, onSelect }: SOSSelectorProps) => {
   return (
     <View className="flex flex-row p-12 gap-3">
       <Pressable
-        className={`flex-1 aspect-square rounded-tr-md rounded-bl-md items-center justify-center ${selected == SOSSlot.S ? "bg-white sos-border-selected" : "bg-white sos-border"} `}
+        className={`flex-1 aspect-square rounded-md items-center justify-center ${selected == SOSSlot.S ? "bg-[#d3f5e4] sos-border-selected" : "bg-white sos-border"} `}
         onPress={() => onSelect(SOSSlot.S)}
       >
         <Text
@@ -32,7 +32,7 @@ const SOSSelector = ({ selected, onSelect }: SOSSelectorProps) => {
         </Text>
       </Pressable>
       <Pressable
-        className={`flex-1 aspect-square rounded-tr-md rounded-bl-md items-center justify-center ${selected == SOSSlot.O ? "bg-[#d3f5e4] sos-border-selected" : "bg-white sos-border"} `}
+        className={`flex-1 aspect-square rounded-md items-center justify-center ${selected == SOSSlot.O ? "bg-[#d3f5e4] sos-border-selected" : "bg-white sos-border"} `}
         onPress={() => onSelect(SOSSlot.O)}
       >
         <Text
