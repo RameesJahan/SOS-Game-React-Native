@@ -1,7 +1,7 @@
 import CustomModal from "@/components/CustomModal";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import { router, SplashScreen, useFocusEffect } from "expo-router";
-import React, { useCallback, useEffect } from "react";
+import { Redirect, router, SplashScreen, useFocusEffect } from "expo-router";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Dimensions,
   ImageBackground,
@@ -34,6 +34,8 @@ import {
   SafeAreaView,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
+import SOSHowToModal from "@/components/SOSHowToModal";
+import AdsInfoModal from "@/components/home/AdsInfoModal";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -89,6 +91,9 @@ const App = (props: Props) => {
   const [showPlayerListModal, setShowPlayerListModal] = React.useState(false);
   const [menuVisible, setMenuVisible] = React.useState(false);
 
+  const [isVisibleHowTO, setIsVisibleHowTO] = useState(false);
+  const [isAdWarnVisible, setIsAdWarnVisible, isLoadingAdWarnVisible] = useSavedState("IS_AD_WARN_VISIBLE", true);
+
   const [modalConfig, setModalConfig] = React.useState<{
     visible: boolean;
     title: string;
@@ -120,9 +125,9 @@ const App = (props: Props) => {
 
   const handleSelectRow = (type: "add" | "less") => {
     if (type === "add" && noRow < MAX_ROW) {
-      setNoRow((prev) => prev + 1);
+      setNoRow(noRow + 1);
     } else if (type === "less" && noRow > 5) {
-      setNoRow((prev) => prev - 1);
+      setNoRow(noRow - 1);
     }
   };
 
@@ -256,6 +261,12 @@ const App = (props: Props) => {
     }
   };
 
+  useEffect(() => {
+    if (!isLoadingAdWarnVisible) {
+      SplashScreen.hideAsync();
+    }
+  }, [isLoadingAdWarnVisible]);
+
   const onRemoveAds = () => {
     // presentPaywallIfNeeded();
     router.push('/remove-ads');
@@ -277,6 +288,11 @@ const App = (props: Props) => {
     });
   };
 
+
+  if (isLoadingAdWarnVisible) {
+    return null;
+  }
+
   return (
     <View className="flex-1 bg-white">
       <CustomModal
@@ -286,6 +302,16 @@ const App = (props: Props) => {
         buttons={modalConfig.buttons}
         onClose={hideModal}
       />
+      <AdsInfoModal
+        visible={isAdWarnVisible}
+        onClose={() => setIsAdWarnVisible(false)}
+        onRemoveAds={() => {
+          setIsAdWarnVisible(false);
+          router.push('/remove-ads');
+        }}
+      />
+      <SOSHowToModal visible={isVisibleHowTO} onClose={() => setIsVisibleHowTO(false)} />
+
       <ImageBackground className="flex-1" source={IMGPaperBg}>
         <SafeAreaView edges={["top"]} className="flex-1">
           <ScrollView
@@ -459,6 +485,9 @@ const App = (props: Props) => {
             style={{ paddingBottom: insets.bottom + 16 }}
             className="w-ful border-t bg-white border-sos-green px-4 pt-4 shadow-card"
           >
+            <Text className="text-lg text-sos-ink mb-3" style={{ fontFamily: "Tempus-Sans" }}>Don't know how to play? {" "}
+              <Text onPress={() => setIsVisibleHowTO(true)} className="text-lg text-sos-ink underline" style={{ fontFamily: "Tempus-Sans" }}>View How To Play</Text>
+            </Text>
             <View>
               {/* Start Game CTA */}
               <Pressable

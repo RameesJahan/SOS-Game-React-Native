@@ -6,6 +6,9 @@ import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect } from "react";
 import mobileAds from "react-native-google-mobile-ads";
+import * as SplashScreen from "expo-splash-screen";
+
+SplashScreen.preventAutoHideAsync();
 
 const AppLayout = () => {
   useEffect(() => {

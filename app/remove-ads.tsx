@@ -152,6 +152,10 @@ const RemoveAdsScreen = () => {
         </View>
       )}
 
+      <Text className="text-xs text-gray-500 text-center mt-6 px-4" style={{ fontFamily: "Tempus-Sans" }}>
+        Note: Ad-free progress is saved locally. If you clear app data or uninstall the game, your progress and ad-free status will be lost.
+      </Text>
+
       <CustomModal
         visible={showSuccessModal}
         title="Success!"
