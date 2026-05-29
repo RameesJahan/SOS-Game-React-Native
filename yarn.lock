@@ -3216,6 +3216,11 @@ expect@^29.0.0, expect@^29.7.0:
     jest-message-util "^29.7.0"
     jest-util "^29.7.0"
 
+expo-application@~55.0.15:
+  version "55.0.15"
+  resolved "https://registry.yarnpkg.com/expo-application/-/expo-application-55.0.15.tgz#5ae5484baa94c69a6eda92757c8e76be035a628d"
+  integrity sha512-eWf5OGrat1r/TYr0daL684C6pJYiN2k30NmcISsD9fbtZLfA6Sbo/JebfYzP3OjO/T/i8j/9Pf3ePqUYPLfZnw==
+
 expo-asset@~55.0.17:
   version "55.0.17"
   resolved "https://registry.yarnpkg.com/expo-asset/-/expo-asset-55.0.17.tgz#750a27685ea118417473f4f293c5a35116b572d4"

@@ -7,7 +7,7 @@ const TermsOfUse = () => {
     <View style={styles.container}>
 
       <SafeAreaView style={styles.container}>
-        <ScrollView style={styles.container}>
+        <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
           <View style={styles.content}>
             <Text style={styles.title}>Terms of Use for SOS Game</Text>
 
@@ -19,7 +19,7 @@ const TermsOfUse = () => {
 
             <Text style={styles.sectionTitle}>2. License</Text>
             <Text style={styles.paragraph}>
-              Kaakka Apps grants you a non-exclusive, non-transferable, revocable
+              Logk grants you a non-exclusive, non-transferable, revocable
               license to use the SOS game for personal, non-commercial purposes.
               You may not use the game for any illegal or unauthorized purpose.
             </Text>
@@ -27,7 +27,7 @@ const TermsOfUse = () => {
             <Text style={styles.sectionTitle}>3. Ownership</Text>
             <Text style={styles.paragraph}>
               All intellectual property rights in the SOS game, including but not
-              limited to design, graphics, and code, are owned by Kaakka Apps,
+              limited to design, graphics, and code, are owned by Logk,
               except for the background image and music, which are used under
               license from third-party providers.
             </Text>
@@ -44,11 +44,20 @@ const TermsOfUse = () => {
             <Text style={styles.paragraph}>
               The SOS game allows you to add a nickname, which is stored locally
               on your device. You are solely responsible for the content you
-              create and add to the game. Kaakka Apps does not have access to or
+              create and add to the game. Logk does not have access to or
               control over this content.
             </Text>
 
-            <Text style={styles.sectionTitle}>6. Prohibited Conduct</Text>
+            <Text style={styles.sectionTitle}>6. Advertisements and Ads Removal</Text>
+            <Text style={styles.paragraph}>
+              The SOS game displays third-party advertisements to support development. 
+              We offer a feature to temporarily remove these advertisements by watching 
+              a certain number of rewarded video ads. The ad-free status is saved locally 
+              on your device. If you clear the app data or uninstall the game, your 
+              progress and ad-free status will be permanently lost, and we cannot restore it.
+            </Text>
+
+            <Text style={styles.sectionTitle}>7. Prohibited Conduct</Text>
             <Text style={styles.paragraph}>
               You agree not to:
               {"\n"}- Use the game for any unlawful purpose.
@@ -58,30 +67,30 @@ const TermsOfUse = () => {
               security.
             </Text>
 
-            <Text style={styles.sectionTitle}>7. Disclaimer of Warranties</Text>
+            <Text style={styles.sectionTitle}>8. Disclaimer of Warranties</Text>
             <Text style={styles.paragraph}>
               The SOS game is provided "as is" without any warranties of any kind,
-              either express or implied. Kaakka Apps does not guarantee that the
+              either express or implied. Logk does not guarantee that the
               game will be error-free, uninterrupted, or free of harmful
               components.
             </Text>
 
-            <Text style={styles.sectionTitle}>8. Limitation of Liability</Text>
+            <Text style={styles.sectionTitle}>9. Limitation of Liability</Text>
             <Text style={styles.paragraph}>
-              Kaakka Apps shall not be liable for any damages arising from the use
+              Logk shall not be liable for any damages arising from the use
               or inability to use the SOS game, including but not limited to
               direct, indirect, incidental, or consequential damages.
             </Text>
 
-            <Text style={styles.sectionTitle}>9. Termination</Text>
+            <Text style={styles.sectionTitle}>10. Termination</Text>
             <Text style={styles.paragraph}>
-              Kaakka Apps reserves the right to terminate or suspend your access
+              Logk reserves the right to terminate or suspend your access
               to the SOS game at any time, without notice, for conduct that
               violates these Terms of Use or is otherwise harmful to other users
-              or Kaakka Apps.
+              or Logk.
             </Text>
 
-            <Text style={styles.sectionTitle}>10. Changes to the Terms</Text>
+            <Text style={styles.sectionTitle}>11. Changes to the Terms</Text>
             <Text style={styles.paragraph}>
               We may update these Terms of Use from time to time to reflect
               changes in the game or legal requirements. If we make changes, we
@@ -90,7 +99,7 @@ const TermsOfUse = () => {
               acceptance of the new terms.
             </Text>
 
-            <Text style={styles.sectionTitle}>11. Governing Law</Text>
+            <Text style={styles.sectionTitle}>12. Governing Law</Text>
             <Text style={styles.paragraph}>
               These Terms of Use are governed by and construed in accordance with
               the laws of Kerala, India, without regard to its conflict of law
@@ -111,6 +120,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+    paddingBottom: 40,
   },
   title: {
     fontSize: 20,
@@ -122,11 +132,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     marginBottom: 8,
+    marginTop: 8,
   },
   paragraph: {
     fontSize: 14,
-    marginBottom: 12,
-    lineHeight: 20,
+    marginBottom: 8,
+    lineHeight: 22,
     paddingBottom: 12,
   },
 });

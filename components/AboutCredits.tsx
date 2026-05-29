@@ -1,60 +1,34 @@
 import React from 'react';
-import { ScrollView, StyleSheet, Text, View, Linking } from 'react-native';
+import { Text, View, Linking } from 'react-native';
 
 const Credits = () => {
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.content}>
-        <Text style={styles.title}>Credits</Text>
+    <View>
+      <Text className="text-xl text-sos-ink font-bold mb-4 text-center" style={{ fontFamily: "Tempus-Sans" }}>
+        Credits
+      </Text>
 
-        <Text style={styles.sectionTitle}>Game Images</Text>
-        <Text style={styles.paragraph}>
-          - <Text style={styles.link} onPress={() => Linking.openURL('https://www.freepik.com')}>Freepik</Text>
-          {'\n'}- License: Free for personal and commercial use, with attribution required.
-        </Text>
+      <Text className="text-base text-sos-ink font-bold mb-1" style={{ fontFamily: "Tempus-Sans" }}>
+        Game Images
+      </Text>
+      <Text className="text-sm text-gray-600 mb-4" style={{ fontFamily: "Tempus-Sans", lineHeight: 20 }}>
+        • <Text className="text-sos-green underline" onPress={() => Linking.openURL('https://www.freepik.com')}>Freepik</Text>
+        {'\n'}• License: Free for personal and commercial use, with attribution required.
+      </Text>
 
-        <Text style={styles.sectionTitle}>Background Music</Text>
-        <Text style={styles.paragraph}>
-          - <Text >Flush Why</Text>
-          {'\n'}- License: Free to use, with attribution required.
-        </Text>
+      <Text className="text-base text-sos-ink font-bold mb-1" style={{ fontFamily: "Tempus-Sans" }}>
+        Background Music
+      </Text>
+      <Text className="text-sm text-gray-600 mb-6" style={{ fontFamily: "Tempus-Sans", lineHeight: 20 }}>
+        • Flush Why
+        {'\n'}• License: Free to use, with attribution required.
+      </Text>
 
-        <Text style={styles.paragraph}>
-          We appreciate the work of these creators and thank them for providing high-quality resources.
-        </Text>
-      </View>
-    </ScrollView>
+      <Text className="text-sm text-gray-500 text-center" style={{ fontFamily: "Tempus-Sans", lineHeight: 20 }}>
+        We appreciate the work of these creators and thank them for providing high-quality resources.
+      </Text>
+    </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-  },
-  content: {
-    flex: 1,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 16,
-    textAlign: 'center',
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 8,
-  },
-  paragraph: {
-    fontSize: 14,
-    marginBottom: 12,
-    lineHeight: 20,
-  },
-  link: {
-    color: 'blue',
-    textDecorationLine: 'underline',
-  },
-});
 
 export default Credits;

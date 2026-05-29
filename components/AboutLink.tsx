@@ -1,19 +1,25 @@
-import { View, Text, Pressable, Linking } from "react-native";
+import { View, Text, Pressable } from "react-native";
 import React from "react";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
 type Props = {
-  innerClassName?: string;
   title: string;
+  icon?: keyof typeof MaterialCommunityIcons.glyphMap;
   onPress?: () => void;
+  isLast?: boolean;
 };
 
-const AboutLink = ({ title, onPress, innerClassName }: Props) => {
+const AboutLink = ({ title, icon, onPress, isLast }: Props) => {
   return (
     <Pressable
-      className={`p-2 w-full justify-center border-y border-neutral-400 ${innerClassName}`}
+      className={`flex-row items-center justify-between p-4 active:bg-gray-100 rounded-xl ${!isLast ? "border-b border-gray-200" : ""}`}
       onPress={onPress}
     >
-      <Text className="text-xl font-medium">{title}</Text>
+      <View className="flex-row items-center">
+        {icon && <MaterialCommunityIcons name={icon} size={24} color="#1A1A1A" style={{ marginRight: 12 }} />}
+        <Text className="text-lg text-sos-ink" style={{ fontFamily: "Tempus-Sans" }}>{title}</Text>
+      </View>
+      <MaterialCommunityIcons name="chevron-right" size={24} color="#666" />
     </Pressable>
   );
 };
