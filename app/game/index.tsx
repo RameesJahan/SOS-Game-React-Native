@@ -293,14 +293,14 @@ const Game = () => {
               showPressEffect={showPressEffect}
             />
             <SOSSelector selected={selected} onSelect={setSelected} />
-            {SHOW_ADS && !isAdFree && (
+            {/* {SHOW_ADS && !isAdFree && (
               <View className="justify-center items-center">
                 <BannerAd
                   size={BannerAdSize.MEDIUM_RECTANGLE}
                   unitId={BANNER_AD_UNIT_ID}
                 />
               </View>
-            )}
+            )} */}
           </ScrollView>
         </SafeAreaView>
       </View>

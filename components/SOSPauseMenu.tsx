@@ -18,23 +18,23 @@ export enum PauseCloseType {
   QUIT,
 }
 
-const BannerContainer = () => {
-  const [width, setWidth] = useState(0)
-  const { isAdFree } = useAdContext();
+// const BannerContainer = () => {
+//   const [width, setWidth] = useState(0)
+//   const { isAdFree } = useAdContext();
 
-  return SHOW_ADS && !isAdFree ? (
-    <View onLayout={(event) => {
-      const { width } = event.nativeEvent.layout
-      setWidth(width)
-    }} className="flex-row my-[12px]">
-      <BannerAd
-        width={width}
-        size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
-        unitId={BANNER_AD_UNIT_ID}
-      />
-    </View>
-  ) : null;
-};
+//   return SHOW_ADS && !isAdFree ? (
+//     <View onLayout={(event) => {
+//       const { width } = event.nativeEvent.layout
+//       setWidth(width)
+//     }} className="flex-row my-[12px]">
+//       <BannerAd
+//         width={width}
+//         size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+//         unitId={BANNER_AD_UNIT_ID}
+//       />
+//     </View>
+//   ) : null;
+// };
 
 const SOSPauseMenu = ({ visible, onClose }: Props) => {
   return (
@@ -45,7 +45,7 @@ const SOSPauseMenu = ({ visible, onClose }: Props) => {
       animationType="fade"
     >
       <SOSMenu title="Pause">
-        <BannerContainer />
+        {/* <BannerContainer /> */}
         <SOSMenuButton
           title="Resume"
           onPress={() => onClose(PauseCloseType.RESUME)}
@@ -59,7 +59,7 @@ const SOSPauseMenu = ({ visible, onClose }: Props) => {
           onPress={() => onClose(PauseCloseType.QUIT)}
           color="red"
         />
-        <BannerContainer />
+        {/* <BannerContainer /> */}
       </SOSMenu>
     </TransparentModal>
   );

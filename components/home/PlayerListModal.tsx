@@ -162,12 +162,12 @@ const PlayerListModal = ({
               />
             ))}
           </View>
-          {SHOW_ADS && !isAdFree && (
+          {/* {SHOW_ADS && !isAdFree && (
             <BannerAd
               size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
               unitId={BANNER_AD_UNIT_ID}
             />
-          )}
+          )} */}
         </ScrollView>
         <View className="w-ful border-t bg-white border-sos-green px-4 py-4 shadow-card">
           <View className="w-full mb-6">

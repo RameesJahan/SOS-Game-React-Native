@@ -314,17 +314,19 @@ const App = (props: Props) => {
 
       <ImageBackground className="flex-1" source={IMGPaperBg}>
         <SafeAreaView edges={["top"]} className="flex-1">
-          <ScrollView
-            className="flex-1"
-            contentContainerStyle={{ flexGrow: 1 }}
-            showsVerticalScrollIndicator={false}
-          >
+          <View className="items-center">
             {SHOW_ADS && !isAdFree && (
               <BannerAd
                 size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
                 unitId={BANNER_AD_UNIT_ID}
               />
             )}
+          </View>
+          <ScrollView
+            className="flex-1"
+            contentContainerClassName="pb-[64px]"
+            showsVerticalScrollIndicator={false}
+          >
             <View className="flex flex-col px-4 pb-6">
               <View className="items-center py-2 flex flex-row justify-between gap-x-2">
                 <SOSHomeLogo />
@@ -503,12 +505,6 @@ const App = (props: Props) => {
               </Pressable>
             </View>
           </View>
-          {SHOW_ADS && !isAdFree && (
-            <BannerAd
-              size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
-              unitId={BANNER_AD_UNIT_ID}
-            />
-          )}
         </SafeAreaView>
       </ImageBackground>
       <PlayerListModal

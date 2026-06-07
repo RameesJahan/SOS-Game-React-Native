@@ -1886,14 +1886,6 @@
   resolved "https://registry.yarnpkg.com/@revenuecat/purchases-typescript-internal/-/purchases-typescript-internal-18.3.0.tgz#c6cd881ee4032abab7adcebcf557ddd6a4838aa3"
   integrity sha512-ZXmhBONbajG5etO8jfhdL2Bj+b/8acRt7vMXWA2d0D0PAlzUsuMuml/yNsYLQUhxGnTtSwh7eFx78MDJWnvFzQ==
 
-"@shopify/react-native-skia@2.4.18":
-  version "2.4.18"
-  resolved "https://registry.yarnpkg.com/@shopify/react-native-skia/-/react-native-skia-2.4.18.tgz#3d42c4b28dbb20feea85ea723a10d21f81d4152d"
-  integrity sha512-/AB/mvb2dGSQVIJTxyG9ZMFn2PjwWlVcFxHU4TV+K25LCU49ntJXl4xda2ghXxdENMggKgO9R5pA+P/AQ0UUrA==
-  dependencies:
-    canvaskit-wasm "0.40.0"
-    react-reconciler "0.31.0"
-
 "@sinclair/typebox@^0.27.8":
   version "0.27.8"
   resolved "https://registry.npmjs.org/@sinclair/typebox/-/typebox-0.27.8.tgz"
@@ -2053,11 +2045,6 @@
   version "1.3.0"
   resolved "https://registry.npmjs.org/@ungap/structured-clone/-/structured-clone-1.3.0.tgz"
   integrity sha512-WmoN8qaIAo7WTYWbAZuG8PYEhn5fkz7dZrqTBZ7dtt//lL2Gwms1IcnQ5yHqjDfX8Ft5j4YzDM23f87zBfDe9g==
-
-"@webgpu/types@0.1.21":
-  version "0.1.21"
-  resolved "https://registry.npmjs.org/@webgpu/types/-/types-0.1.21.tgz"
-  integrity sha512-pUrWq3V5PiSGFLeLxoGqReTZmiiXwY3jRkIG5sLLKjyqNxrwm/04b4nw7LSmGWJcKk59XOM/YRTUwOzo4MMlow==
 
 "@xmldom/xmldom@^0.8.8":
   version "0.8.11"
@@ -2561,13 +2548,6 @@ caniuse-lite@^1.0.30001759:
   version "1.0.30001763"
   resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001763.tgz"
   integrity sha512-mh/dGtq56uN98LlNX9qdbKnzINhX0QzhiWBFEkFfsFO4QyCvL8YegrJAazCwXIeqkIob8BlZPGM3xdnY+sgmvQ==
-
-canvaskit-wasm@0.40.0:
-  version "0.40.0"
-  resolved "https://registry.npmjs.org/canvaskit-wasm/-/canvaskit-wasm-0.40.0.tgz"
-  integrity sha512-Od2o+ZmoEw9PBdN/yCGvzfu0WVqlufBPEWNG452wY7E9aT8RBE+ChpZF526doOlg7zumO4iCS+RAeht4P0Gbpw==
-  dependencies:
-    "@webgpu/types" "0.1.21"
 
 chalk@^2.0.1, chalk@^2.4.2:
   version "2.4.2"
@@ -5720,11 +5700,6 @@ react-native-css-interop@0.2.3:
     lightningcss "~1.27.0"
     semver "^7.6.3"
 
-react-native-fast-confetti@^1.1.2:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/react-native-fast-confetti/-/react-native-fast-confetti-1.1.2.tgz#3f0d4c2cb67839c6a530ab7b0492ea1648f16a70"
-  integrity sha512-7AblPC39w9jtF44dEy1nYttkfveJpw0N57SGdSEbJVgQ//nrRlaVEmtiQDrohfhXW5582neB0vnHyHxNu6VCpg==
-
 react-native-gesture-handler@~2.30.0:
   version "2.30.1"
   resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-2.30.1.tgz#d930b8b8870cd2f5cc0c967acf94c8891ada42de"
@@ -5859,13 +5834,6 @@ react-native@0.83.6:
     whatwg-fetch "^3.0.0"
     ws "^7.5.10"
     yargs "^17.6.2"
-
-react-reconciler@0.31.0:
-  version "0.31.0"
-  resolved "https://registry.npmjs.org/react-reconciler/-/react-reconciler-0.31.0.tgz"
-  integrity sha512-7Ob7Z+URmesIsIVRjnLoDGwBEG/tVitidU0nMsqX/eeJaLY89RISO/10ERe0MqmzuKUUB1rmY+h1itMbUHg9BQ==
-  dependencies:
-    scheduler "^0.25.0"
 
 react-refresh@^0.14.0, react-refresh@^0.14.2:
   version "0.14.2"
@@ -6074,11 +6042,6 @@ scheduler@0.27.0, scheduler@^0.27.0:
   version "0.27.0"
   resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.27.0.tgz#0c4ef82d67d1e5c1e359e8fc76d3a87f045fe5bd"
   integrity sha512-eNv+WrVbKu1f3vbYJT/xtiF5syA5HPIMtf9IgY/nKg0sWqzAUEvqY/xm7OcZc/qafLx/iO9FgOmeSAp4v5ti/Q==
-
-scheduler@^0.25.0:
-  version "0.25.0"
-  resolved "https://registry.npmjs.org/scheduler/-/scheduler-0.25.0.tgz"
-  integrity sha512-xFVuu11jh+xcO7JOAGJNOXld8/TcEHK/4CituBUeUb5hqxJLj9YuemAEuvm9gQ/+pgXYfbQuqAkiYu+u7YEsNA==
 
 scheduler@^0.26.0:
   version "0.26.0"
