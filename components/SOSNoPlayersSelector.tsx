@@ -11,6 +11,22 @@ const SOSNoPlayersSelector = ({ selected, onSelect }: Props) => {
   return (
     <View>
       <View className="flex flex-row flex-wrap justify-center items-center gap-2 w-full">
+        <Pressable
+          className={
+            "flex-1 basis-full rounded-xl items-center justify-center py-3 px-7 " +
+            (selected === -1
+              ? "bg-[#d3f5e4] sos-border-selected"
+              : "bg-white sos-border")
+          }
+          onPress={() => onSelect(-1)}
+        >
+          <Text
+            className="text-lg text-sos-ink"
+            style={{ fontFamily: "Tempus-Sans" }}
+          >
+            VS AI
+          </Text>
+        </Pressable>
         {arr.map((_, index) => (
           <Pressable
             key={index}

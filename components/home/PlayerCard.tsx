@@ -7,6 +7,7 @@ type PlayerCardProps = {
   player: PlayerData;
   playersList: PlayerData[];
   index: number;
+  isAISelected: boolean;
   onPlayerTypeToggle: (index: number) => void;
   onPlayersNameChange: (text: string, index: number) => void;
   onPlayerColorChange: (index: number, color: string) => void;
@@ -26,6 +27,7 @@ const PlayerCard = ({
   player,
   playersList,
   index,
+  isAISelected,
   onPlayerTypeToggle,
   onPlayersNameChange,
   onPlayerColorChange,
@@ -42,32 +44,30 @@ const PlayerCard = ({
         </Text>
         {/* Human/AI selector top-right (replaces star) */}
         <View>
-          <View className="flex-row rounded-md border-2 border-gray-200 overflow-hidden bg-gray-200">
+          <View style={{ opacity: isAISelected ? 0.5 : 1 }} className="flex-row rounded-md border-2 border-gray-200 overflow-hidden bg-gray-200">
             <Pressable
+              disabled={isAISelected}
               onPress={() => onPlayerTypeToggle(index)}
-              className={`px-3 py-2 rounded-md items-center justify-center ${
-                !player.isAi ? "bg-sos-green" : ""
-              }`}
+              className={`px-3 py-2 rounded-md items-center justify-center ${!player.isAi ? "bg-sos-green" : ""
+                }`}
             >
               <Text
-                className={`text-xs ${
-                  !player.isAi ? "text-sos-ink" : "text-gray-400"
-                }`}
+                className={`text-xs ${!player.isAi ? "text-sos-ink" : "text-gray-400"
+                  }`}
                 style={{ fontFamily: "Tempus-Sans" }}
               >
                 HUMAN
               </Text>
             </Pressable>
             <Pressable
+              disabled={isAISelected}
               onPress={() => onPlayerTypeToggle(index)}
-              className={`px-3 py-1 rounded-md items-center justify-center ${
-                player.isAi ? "bg-sos-green" : ""
-              }`}
+              className={`px-3 py-1 rounded-md items-center justify-center ${player.isAi ? "bg-sos-green" : ""
+                }`}
             >
               <Text
-                className={`text-xs ${
-                  player.isAi ? "text-sos-ink" : "text-gray-400"
-                }`}
+                className={`text-xs ${player.isAi ? "text-sos-ink" : "text-gray-400"
+                  }`}
                 style={{ fontFamily: "Tempus-Sans" }}
               >
                 AI
@@ -127,9 +127,8 @@ const PlayerCard = ({
                 key={color}
                 disabled={isColorSelectedByOther}
                 onPress={() => onPlayerColorChange(index, color)}
-                className={`w-7 h-7 rounded-full border-2 ${
-                  player.color === color ? "border-sos-green" : "border-sos-ink"
-                }`}
+                className={`w-7 h-7 rounded-full border-2 ${player.color === color ? "border-sos-green" : "border-sos-ink"
+                  }`}
                 style={{
                   backgroundColor: color,
                   opacity: isColorSelectedByOther ? 0.3 : 1,

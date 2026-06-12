@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Modal, Text, TextInput, View, Pressable, Alert, Linking } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAgeContext } from "@/context/age-context";
@@ -11,10 +11,73 @@ const AgeGateModal = () => {
   const [day, setDay] = useState("");
   const [year, setYear] = useState("");
   const [showTerms, setShowTerms] = useState(false);
+  const [inputError, setInputError] = useState({
+    month: undefined as string | undefined,
+    day: undefined as string | undefined,
+    year: undefined as string | undefined,
+  });
+
+  const monthInputRef = useRef<TextInput>(null);
+  const dayInputRef = useRef<TextInput>(null);
+  const yearInputRef = useRef<TextInput>(null);
 
   // Do not render anything until we are sure loading is done
   if (isLoading || isAgeGateComplete) {
     return null;
+  }
+
+  const validateMonth = (month: string) => {
+    const m = parseInt(month, 10);
+    if (isNaN(m) || m < 1 || m > 12) {
+      setInputError({
+        ...inputError,
+        month: "Invalid Month",
+      });
+      return true;
+    }
+    else {
+      setInputError({
+        ...inputError,
+        month: undefined,
+      });
+      return false;
+    }
+  }
+
+  const validateDay = (day: string) => {
+    const d = parseInt(day, 10);
+    if (isNaN(d) || d < 1 || d > 31) {
+      setInputError({
+        ...inputError,
+        day: "Invalid Day",
+      });
+      return true;
+    }
+    else {
+      setInputError({
+        ...inputError,
+        day: undefined,
+      });
+      return false;
+    }
+  }
+
+  const validateYear = (year: string) => {
+    const y = parseInt(year, 10);
+    if (isNaN(y) || y < 1900 || y > new Date().getFullYear()) {
+      setInputError({
+        ...inputError,
+        year: "Invalid Year",
+      });
+      return true;
+    }
+    else {
+      setInputError({
+        ...inputError,
+        year: undefined,
+      });
+      return false;
+    }
   }
 
   const handleSubmit = () => {
@@ -25,15 +88,15 @@ const AgeGateModal = () => {
 
     const currentYear = new Date().getFullYear();
 
-    if (isNaN(m) || m < 1 || m > 12) {
+    if (validateMonth(month)) {
       Alert.alert("Invalid Month", "Please enter a valid month (1-12).");
       return;
     }
-    if (isNaN(d) || d < 1 || d > 31) {
+    if (validateDay(day)) {
       Alert.alert("Invalid Day", "Please enter a valid day (1-31).");
       return;
     }
-    if (isNaN(y) || y < 1900 || y > currentYear) {
+    if (validateYear(year)) {
       Alert.alert("Invalid Year", "Please enter a valid year.");
       return;
     }
@@ -74,47 +137,82 @@ const AgeGateModal = () => {
               Please enter your birth date to continue.
             </Text>
 
-            <View className="flex-row items-center justify-between w-full mb-8">
+            <View className="flex-row items-start justify-between w-full mb-8">
 
               <View className="flex-1 mr-2">
                 <Text className="text-sm text-gray-500 mb-2 font-bold" style={{ fontFamily: "Tempus-Sans" }}>Month</Text>
                 <TextInput
+                  ref={monthInputRef}
+                  onSubmitEditing={() => {
+                    if (validateMonth(month)) return;
+                    dayInputRef.current?.focus()
+                  }}
+                  onBlur={() => validateMonth(month)}
+                  returnKeyType="next"
                   className="bg-gray-100 p-4 rounded-xl text-center text-xl sos-border"
                   placeholder="MM"
                   placeholderTextColor="#6B7280"
                   keyboardType="number-pad"
+                  textContentType="birthdateMonth"
                   maxLength={2}
                   value={month}
                   onChangeText={setMonth}
                 />
+                {inputError.month && (
+                  <Text className="text-red-500 text-xs mb-2 font-bold" style={{ fontFamily: "Tempus-Sans" }}>
+                    {inputError.month}
+                  </Text>
+                )}
               </View>
 
               <View className="flex-1 mx-2">
                 <Text className="text-sm text-gray-500 mb-2 font-bold" style={{ fontFamily: "Tempus-Sans" }}>Day</Text>
                 <TextInput
+                  ref={dayInputRef}
+                  onSubmitEditing={() => {
+                    if (validateDay(day)) return;
+                    yearInputRef.current?.focus()
+                  }}
+                  onBlur={() => validateDay(day)}
+                  returnKeyType="next"
                   className="bg-gray-100 p-4 rounded-xl text-center text-xl sos-border"
                   placeholder="DD"
                   placeholderTextColor="#6B7280"
+                  textContentType="birthdateDay"
                   keyboardType="number-pad"
                   maxLength={2}
                   value={day}
                   onChangeText={setDay}
                 />
+                {inputError.day && (
+                  <Text className="text-red-500 text-xs mb-2 font-bold" style={{ fontFamily: "Tempus-Sans" }}>
+                    {inputError.day}
+                  </Text>
+                )}
               </View>
 
               <View className="flex-1 ml-2">
                 <Text className="text-sm text-gray-500 mb-2 font-bold" style={{ fontFamily: "Tempus-Sans" }}>Year</Text>
                 <TextInput
+                  ref={yearInputRef}
+                  onSubmitEditing={handleSubmit}
+                  onBlur={() => validateYear(year)}
+                  returnKeyType="done"
                   className="bg-gray-100 p-4 rounded-xl text-center text-xl sos-border"
                   placeholder="YYYY"
                   placeholderTextColor="#6B7280"
                   keyboardType="number-pad"
+                  textContentType="birthdateYear"
                   maxLength={4}
                   value={year}
                   onChangeText={setYear}
                 />
+                {inputError.year && (
+                  <Text className="text-red-500 text-xs mb-2 font-bold" style={{ fontFamily: "Tempus-Sans" }}>
+                    {inputError.year}
+                  </Text>
+                )}
               </View>
-
             </View>
 
             <Pressable

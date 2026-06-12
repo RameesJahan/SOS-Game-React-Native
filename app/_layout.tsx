@@ -25,6 +25,11 @@ const AppContent = () => {
       const ageDate = new Date(ageDifMs);
       const age = Math.abs(ageDate.getUTCFullYear() - 1970);
       const isUnder13 = age < 13;
+      const isUnder18 = age < 18;
+
+      console.log("Age:", age);
+      console.log("Is Under 13:", isUnder13);
+      console.log("Is Under 18:", isUnder18);
 
       // Request tracking authorization
       const status = await requestAuthorization();
@@ -33,14 +38,14 @@ const AppContent = () => {
       if (status === PermissionStatus.UNDETERMINED) {
         // Apply Child Directed Treatment based on age calculation
         await mobileAds().setRequestConfiguration({
-          maxAdContentRating: isUnder13 ? MaxAdContentRating.G : MaxAdContentRating.T,
+          maxAdContentRating: isUnder13 ? MaxAdContentRating.G : isUnder18 ? MaxAdContentRating.T : MaxAdContentRating.MA,
 
           // This explicitly handles the US (Under 13)
           tagForChildDirectedTreatment: isUnder13,
 
           // By setting this to true, Google checks the user's IP. 
           // If they are in Europe and under 16, Google automatically restricts the ads.
-          tagForUnderAgeOfConsent: isUnder13,
+          tagForUnderAgeOfConsent: isUnder18,
         });
 
         await mobileAds().initialize();

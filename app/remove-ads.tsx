@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, Pressable, ActivityIndicator, Alert } from 'react-native';
 import { useAdContext } from '@/context/ad-context';
-import { RewardedAd, RewardedAdEventType } from 'react-native-google-mobile-ads';
+import { AdEventType, RewardedAd, RewardedAdEventType } from 'react-native-google-mobile-ads';
 import { REWARDED_AD_UNIT_ID } from '@/utils/AdHelpers';
 import { useRouter } from 'expo-router';
 import CustomModal from '@/components/CustomModal';
@@ -19,12 +19,20 @@ const RemoveAdsScreen = () => {
   const stateRef = useRef({ isAdFree, watchedAdsCount });
 
   const loadAd = () => {
+
     const rewarded = RewardedAd.createForAdRequest(REWARDED_AD_UNIT_ID);
     rewardedRef.current = rewarded;
 
     rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
       console.log("Rewarded ad loaded");
       setIsLoaded(true);
+    });
+
+    rewarded.addAdEventListener(AdEventType.CLOSED, () => {
+      console.log("Rewarded ad closed");
+      setIsLoaded(false);
+      rewardedRef.current?.removeAllListeners();
+      loadAd();
     });
 
     rewarded.addAdEventListener(

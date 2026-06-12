@@ -51,9 +51,24 @@ const PlayerDataColors = [
   "#f6339a", // pink
 ];
 
-const createPlayersData = (x: number) => {
+const createPlayersData = (x: number): PlayerData[] => {
+  if (x === 1) {
+    return [
+      {
+        name: "Player 1",
+        color: PlayerDataColors[0],
+        isAi: false,
+      },
+      {
+        name: "AI",
+        color: PlayerDataColors[1],
+        isAi: true,
+      },
+    ];
+  }
+
   const arr: PlayerData[] = new Array(x).fill(0).map((_, index) => ({
-    name: index === 0 ? "Sam" : `Player ${index + 1}`,
+    name: `Player ${index + 1}`,
     color: PlayerDataColors[index % PlayerDataColors.length],
   }));
 
@@ -87,6 +102,7 @@ const App = (props: Props) => {
     "DIFFICULTY",
     AIDifficulty.EASY,
   );
+  const [isAISelected, setIsAISelected] = useSavedState<boolean>("AI_SELECTED", false);
 
   const [showPlayerListModal, setShowPlayerListModal] = React.useState(false);
   const [menuVisible, setMenuVisible] = React.useState(false);
@@ -114,14 +130,15 @@ const App = (props: Props) => {
   const { isSoundOn, setIsSoundOn, isLoading } = useSoundContext();
 
   const handleSelectNoPlayers = (value: number) => {
+    setIsAISelected(value === -1);
     setPlayersList(createPlayersData(value + 2));
   };
 
-  const handleOnPlayersNameChange = (value: string, index: number) => {
-    const arr = [...playersList];
-    arr[index].name = value;
-    setPlayersList(arr);
-  };
+  // const handleOnPlayersNameChange = (value: string, index: number) => {
+  //   const arr = [...playersList];
+  //   arr[index].name = value;
+  //   setPlayersList(arr);
+  // };
 
   const handleSelectRow = (type: "add" | "less") => {
     if (type === "add" && noRow < MAX_ROW) {
@@ -131,39 +148,39 @@ const App = (props: Props) => {
     }
   };
 
-  const handleSelectCol = (type: "add" | "less") => {
-    if (type === "add" && noCol < MAX_COL) {
-      setNoCol((prev) => prev + 1);
-    } else if (type === "less" && noCol > 5) {
-      setNoCol((prev) => prev - 1);
-    }
-  };
+  // const handleSelectCol = (type: "add" | "less") => {
+  //   if (type === "add" && noCol < MAX_COL) {
+  //     setNoCol((prev) => prev + 1);
+  //   } else if (type === "less" && noCol > 5) {
+  //     setNoCol((prev) => prev - 1);
+  //   }
+  // };
 
-  const handlePlayerColorChange = (index: number, color: string) => {
-    const arr = [...playersList];
-    arr[index].color = color;
-    setPlayersList(arr);
-  };
+  // const handlePlayerColorChange = (index: number, color: string) => {
+  //   const arr = [...playersList];
+  //   arr[index].color = color;
+  //   setPlayersList(arr);
+  // };
 
-  const handlePlayerTypeToggle = (index: number) => {
-    const arr = [...playersList];
+  // const handlePlayerTypeToggle = (index: number) => {
+  //   const arr = [...playersList];
 
-    if (!arr[index].isAi) {
-      const humanPlayers = arr.filter((p) => !p.isAi).length;
-      if (humanPlayers <= 1) {
-        setModalConfig({
-          visible: true,
-          title: "Invalid Action",
-          message: "At least one player must be human.",
-          buttons: [{ text: "OK", onPress: hideModal }],
-        });
-        return;
-      }
-    }
+  //   if (!arr[index].isAi) {
+  //     const humanPlayers = arr.filter((p) => !p.isAi).length;
+  //     if (humanPlayers <= 1) {
+  //       setModalConfig({
+  //         visible: true,
+  //         title: "Invalid Action",
+  //         message: "At least one player must be human.",
+  //         buttons: [{ text: "OK", onPress: hideModal }],
+  //       });
+  //       return;
+  //     }
+  //   }
 
-    arr[index].isAi = !arr[index].isAi;
-    setPlayersList(arr);
-  };
+  //   arr[index].isAi = !arr[index].isAi;
+  //   setPlayersList(arr);
+  // };
 
   const showRatingDialog = () => {
     if (InAppReview.isAvailable()) {
@@ -366,7 +383,7 @@ const App = (props: Props) => {
                 </View>
                 <SOSNoPlayersSelector
                   selected={
-                    playersList.some((player) => player.isAi)
+                    isAISelected
                       ? -1
                       : playersList.length - 2
                   }
@@ -512,6 +529,7 @@ const App = (props: Props) => {
         onClose={() => setShowPlayerListModal(false)}
         playersList={playersList}
         difficulty={difficulty}
+        isAISelected={isAISelected}
         setDifficulty={setDifficulty}
         onPlayersUpdate={setPlayersList}
         onPressStartGame={handleStartGame}

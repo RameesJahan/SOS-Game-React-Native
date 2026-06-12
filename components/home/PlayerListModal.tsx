@@ -41,6 +41,7 @@ type PlayerListModalProps = {
   playersList: PlayerData[];
   onClose: () => void;
   difficulty: AIDifficulty;
+  isAISelected: boolean;
   setDifficulty: (difficulty: AIDifficulty) => void;
   onPressStartGame: () => void;
   onPlayersUpdate: (playersList: PlayerData[]) => void;
@@ -53,6 +54,7 @@ const PlayerListModal = ({
   difficulty,
   setDifficulty,
   style,
+  isAISelected,
   onPressStartGame,
   onPlayersUpdate,
   ...props
@@ -156,6 +158,7 @@ const PlayerListModal = ({
                 player={player}
                 index={index}
                 playersList={playersList}
+                isAISelected={isAISelected}
                 onPlayerTypeToggle={handlePlayerTypeToggle}
                 onPlayersNameChange={handleOnPlayersNameChange}
                 onPlayerColorChange={handlePlayerColorChange}
