@@ -4,13 +4,42 @@ import { SoundContextProvider } from "@/context/sound-context";
 import { AdProvider } from "@/context/ad-context";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import React, { useEffect } from "react";
+import React, { use, useEffect } from "react";
 import mobileAds, { MaxAdContentRating } from "react-native-google-mobile-ads";
 import * as SplashScreen from "expo-splash-screen";
-import { AgeProvider, useAgeContext } from "@/context/age-context";
+import { AgeContext, AgeContextBridge, AgeProvider, useAgeContext } from "@/context/age-context";
 import AgeGateModal from "@/components/AgeGateModal";
+import { registerDevMenuItems } from 'expo-dev-menu';
 
 SplashScreen.preventAutoHideAsync();
+
+const devMenuItems = [
+  {
+    name: 'Open Ad Inspector',
+    callback: () => mobileAds().openAdInspector(),
+  },
+  {
+    name: 'Set Age to 10',
+    callback: () => {
+      AgeContextBridge.updateBirthDate(new Date(Date.now() - 10 * 365 * 24 * 60 * 60 * 1000).toISOString());
+    }
+  },
+  {
+    name: 'Set Age to 16',
+    callback: () => {
+      AgeContextBridge.updateBirthDate(new Date(Date.now() - 16 * 365 * 24 * 60 * 60 * 1000).toISOString());
+    }
+  },
+  {
+    name: 'Set Age to 20',
+    callback: () => {
+      AgeContextBridge.updateBirthDate(new Date(Date.now() - 20 * 365 * 24 * 60 * 60 * 1000).toISOString());
+    }
+  },
+];
+
+registerDevMenuItems(devMenuItems);
+
 
 const AppContent = () => {
   const { isAgeGateComplete, birthDate } = useAgeContext();
@@ -35,22 +64,25 @@ const AppContent = () => {
       const status = await requestAuthorization();
       console.log("Tracking authorization status:", status);
 
-      if (status === PermissionStatus.UNDETERMINED) {
-        // Apply Child Directed Treatment based on age calculation
-        await mobileAds().setRequestConfiguration({
-          maxAdContentRating: isUnder13 ? MaxAdContentRating.G : isUnder18 ? MaxAdContentRating.T : MaxAdContentRating.MA,
+      console.log("set mobile ads config");
+      // Apply Child Directed Treatment based on age calculation
+      await mobileAds().setRequestConfiguration({
+        maxAdContentRating: isUnder13 ? MaxAdContentRating.G : isUnder18 ? MaxAdContentRating.T : MaxAdContentRating.MA,
 
-          // This explicitly handles the US (Under 13)
-          tagForChildDirectedTreatment: isUnder13,
+        // This explicitly handles the US (Under 13)
+        tagForChildDirectedTreatment: isUnder13,
 
-          // By setting this to true, Google checks the user's IP. 
-          // If they are in Europe and under 16, Google automatically restricts the ads.
-          tagForUnderAgeOfConsent: isUnder18,
-        });
+        // By setting this to true, Google checks the user's IP. 
+        // If they are in Europe and under 16, Google automatically restricts the ads.
+        tagForUnderAgeOfConsent: isUnder18,
+      });
 
-        await mobileAds().initialize();
-      }
-    };
+      const AdapterStatuses = await mobileAds().initialize();
+
+      AdapterStatuses.forEach((adapterStatus) => {
+        console.log("[Adapter status]", adapterStatus.name, adapterStatus.state, adapterStatus.description);
+      });
+    }
 
     initAds();
   }, [isAgeGateComplete, birthDate]);

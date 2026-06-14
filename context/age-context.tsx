@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from "react";
+import React, { createContext, useContext, useEffect } from "react";
 import { useSavedState } from "@/hooks/useSavedState";
 
 interface AgeContextType {
@@ -8,12 +8,24 @@ interface AgeContextType {
   isLoading: boolean;
 }
 
-const AgeContext = createContext<AgeContextType | undefined>(undefined);
+export const AgeContext = createContext<AgeContextType | undefined>(undefined);
 
 export const AgeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [birthDate, setBirthDateState, isLoading] = useSavedState<string | null>("userBirthDate", null);
 
   const isAgeGateComplete = birthDate !== null;
+
+  useEffect(() => {
+    const subscription = AgeContextBridge.subscribe((newBirthDate) => {
+      // 1. Save the new value to storage immediately
+      setBirthDateState(newBirthDate);
+    });
+
+    // 3. Optional: Clean up subscription on unmount
+    return () => {
+      subscription();
+    };
+  }, [setBirthDateState]); // 👈 Ensure setBirthDateState is included
 
   return (
     <AgeContext.Provider
@@ -35,4 +47,18 @@ export const useAgeContext = () => {
     throw new Error("useAgeContext must be used within an AgeProvider");
   }
   return context;
+};
+
+const listeners = new Set<(birthDate: string) => void>();
+
+export const AgeContextBridge = {
+  // Call this from OUTSIDE React components to update data
+  updateBirthDate(birthDate: string) {
+    listeners.forEach((listener: (birthDate: string) => void) => listener(birthDate));
+  },
+  // Used internally by the Provider to listen for updates
+  subscribe(listener: (birthDate: string) => void) {
+    listeners.add(listener);
+    return () => listeners.delete(listener); // Cleanup function
+  }
 };
