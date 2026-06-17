@@ -89,7 +89,7 @@ const MAX_ROW = getMaxRow();
 const MAX_COL = getMaxRow(); // Same logic for columns
 
 const App = (props: Props) => {
-  const { isAdFree } = useAdContext();
+  const { isAdFree, isAdReady } = useAdContext();
   const insets = useSafeAreaInsets();
   const [noRow, setNoRow] = useSavedState<number>("NO_OF_ROW", 8);
   const [noCol, setNoCol] = useSavedState<number>("NO_OF_COL", 10);
@@ -332,7 +332,7 @@ const App = (props: Props) => {
       <ImageBackground className="flex-1" source={IMGPaperBg}>
         <SafeAreaView edges={["top"]} className="flex-1">
           <View className="items-center">
-            {SHOW_ADS && !isAdFree && (
+            {isAdReady && SHOW_ADS && !isAdFree && (
               <BannerAd
                 size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
                 unitId={BANNER_AD_UNIT_ID}

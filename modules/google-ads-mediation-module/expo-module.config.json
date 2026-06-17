@@ -1,0 +1,9 @@
+{
+  "platforms": ["apple", "android", "web"],
+  "apple": {
+    "modules": ["GoogleAdsMediationModule"]
+  },
+  "android": {
+    "modules": ["expo.modules.googleadsmediationmodule.GoogleAdsMediationModule"]
+  }
+}

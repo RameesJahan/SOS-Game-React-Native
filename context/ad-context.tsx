@@ -2,6 +2,7 @@ import React, { createContext, useCallback, useContext, useEffect, useRef, useSt
 import { useSavedState } from "@/hooks/useSavedState";
 
 interface AdContextType {
+  isAdReady: boolean;
   isAdFree: boolean;
   watchedAdsCount: number;
   adFreeUntil: number | null;
@@ -11,8 +12,9 @@ interface AdContextType {
 
 const AdContext = createContext<AdContextType | undefined>(undefined);
 
-export const AdProvider: React.FC<{ children: React.ReactNode }> = ({
+export const AdProvider: React.FC<{ children: React.ReactNode, isAdReady: boolean }> = ({
   children,
+  isAdReady,
 }) => {
   // We store the timestamp when the ad-free period expires
   const [adFreeUntil, setAdFreeUntil, isLoadingAdFree] = useSavedState<number | null>(
@@ -26,10 +28,15 @@ export const AdProvider: React.FC<{ children: React.ReactNode }> = ({
     0
   );
 
+  const [isAdReadyState, setIsAdReadyState] = useState(false);
   const [isAdFree, setIsAdFree] = useState(false);
 
   // Keep track of latest state for the event listeners without causing re-renders
   const stateRef = useRef({ isAdFree, watchedAdsCount, adFreeUntil });
+
+  useEffect(() => {
+    setIsAdReadyState(isAdReady);
+  }, [isAdReady]);
 
   useEffect(() => {
     console.log(isAdFree, 'isAdFree');
@@ -79,6 +86,7 @@ export const AdProvider: React.FC<{ children: React.ReactNode }> = ({
   return (
     <AdContext.Provider
       value={{
+        isAdReady: isAdReadyState,
         isAdFree,
         watchedAdsCount,
         adFreeUntil,
