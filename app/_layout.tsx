@@ -7,40 +7,50 @@ import { StatusBar } from "expo-status-bar";
 import React, { use, useEffect, useState } from "react";
 import mobileAds, { MaxAdContentRating } from "react-native-google-mobile-ads";
 import * as SplashScreen from "expo-splash-screen";
-import { AgeContext, AgeContextBridge, AgeProvider, useAgeContext } from "@/context/age-context";
+import {
+  AgeContext,
+  AgeContextBridge,
+  AgeProvider,
+  useAgeContext,
+} from "@/context/age-context";
 import AgeGateModal from "@/components/AgeGateModal";
-import { registerDevMenuItems } from 'expo-dev-menu';
+import { registerDevMenuItems } from "expo-dev-menu";
 import GoogleAdsMediationModule from "@/modules/google-ads-mediation-module/src/GoogleAdsMediationModule";
 
 SplashScreen.preventAutoHideAsync();
 
 const devMenuItems = [
   {
-    name: 'Open Ad Inspector',
+    name: "Open Ad Inspector",
     callback: () => mobileAds().openAdInspector(),
   },
   {
-    name: 'Set Age to 10',
+    name: "Set Age to 10",
     callback: () => {
-      AgeContextBridge.updateBirthDate(new Date(Date.now() - 10 * 365 * 24 * 60 * 60 * 1000).toISOString());
-    }
+      AgeContextBridge.updateBirthDate(
+        new Date(Date.now() - 10 * 365 * 24 * 60 * 60 * 1000).toISOString(),
+      );
+    },
   },
   {
-    name: 'Set Age to 16',
+    name: "Set Age to 16",
     callback: () => {
-      AgeContextBridge.updateBirthDate(new Date(Date.now() - 16 * 365 * 24 * 60 * 60 * 1000).toISOString());
-    }
+      AgeContextBridge.updateBirthDate(
+        new Date(Date.now() - 16 * 365 * 24 * 60 * 60 * 1000).toISOString(),
+      );
+    },
   },
   {
-    name: 'Set Age to 20',
+    name: "Set Age to 20",
     callback: () => {
-      AgeContextBridge.updateBirthDate(new Date(Date.now() - 20 * 365 * 24 * 60 * 60 * 1000).toISOString());
-    }
+      AgeContextBridge.updateBirthDate(
+        new Date(Date.now() - 20 * 365 * 24 * 60 * 60 * 1000).toISOString(),
+      );
+    },
   },
 ];
 
 registerDevMenuItems(devMenuItems);
-
 
 const AppContent = () => {
   const { isAgeGateComplete, birthDate } = useAgeContext();
@@ -62,36 +72,56 @@ const AppContent = () => {
       console.log("Is Under 13:", isUnder13);
       console.log("Is Under 18:", isUnder18);
 
-      // Request tracking authorization
-      const status = await requestAuthorization();
-      console.log("Tracking authorization status:", status);
-
-      console.log("set mobile ads config");
-      if (isUnder13) {
-        GoogleAdsMediationModule.setInMobiIsAgeRestricted(true);
-      } else {
-        GoogleAdsMediationModule.setInMobiIsAgeRestricted(false);
-      }
+      let maxRating = MaxAdContentRating.MA;
+      if (isUnder13) maxRating = MaxAdContentRating.G;
+      else if (isUnder18) maxRating = MaxAdContentRating.T;
       // Apply Child Directed Treatment based on age calculation
       await mobileAds().setRequestConfiguration({
-        maxAdContentRating: isUnder13 ? MaxAdContentRating.G : isUnder18 ? MaxAdContentRating.T : MaxAdContentRating.MA,
+        maxAdContentRating: maxRating,
 
         // This explicitly handles the US (Under 13)
-        tagForChildDirectedTreatment: isUnder13,
+        tagForChildDirectedTreatment: isUnder13 ? true : false,
 
-        // By setting this to true, Google checks the user's IP. 
+        // By setting this to true, Google checks the user's IP.
         // If they are in Europe and under 16, Google automatically restricts the ads.
-        tagForUnderAgeOfConsent: isUnder18,
+        tagForUnderAgeOfConsent: isUnder18 ? true : false,
       });
+
+      if (!isUnder13) {
+        // Request tracking authorization
+        const status = await requestAuthorization();
+        console.log("Tracking authorization status:", status);
+      }
 
       const AdapterStatuses = await mobileAds().initialize();
 
-      setIsAdReady(true);
-
       AdapterStatuses.forEach((adapterStatus) => {
-        console.log("[Adapter status]", adapterStatus.name, adapterStatus.state, adapterStatus.description);
+        console.log(
+          "[Adapter status]",
+          adapterStatus.name,
+          adapterStatus.state,
+          adapterStatus.description,
+        );
       });
-    }
+
+      console.log("set mobile ads config");
+      if (
+        AdapterStatuses.find(
+          (status) =>
+            status.name ===
+            "com.google.ads.mediation.inmobi.InMobiMediationAdapter",
+        )?.state === 1
+      ) {
+        console.log("InMobi adapter is initialized");
+        if (isUnder13) {
+          GoogleAdsMediationModule.setInMobiIsAgeRestricted(true);
+        } else {
+          GoogleAdsMediationModule.setInMobiIsAgeRestricted(false);
+        }
+      }
+
+      setIsAdReady(true);
+    };
 
     initAds();
   }, [isAgeGateComplete, birthDate]);
@@ -101,7 +131,9 @@ const AppContent = () => {
       <AdProvider isAdReady={isAdReady}>
         <SoundContextProvider>
           <StatusBar hidden />
-          <Stack screenOptions={{ headerShown: false, animation: "simple_push" }} />
+          <Stack
+            screenOptions={{ headerShown: false, animation: "simple_push" }}
+          />
         </SoundContextProvider>
       </AdProvider>
       <AgeGateModal />
@@ -116,6 +148,5 @@ const AppLayout = () => {
     </AgeProvider>
   );
 };
-
 
 export default AppLayout;

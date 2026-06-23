@@ -59,7 +59,7 @@ const PlayerListModal = ({
   onPlayersUpdate,
   ...props
 }: PlayerListModalProps) => {
-  const { isAdFree } = useAdContext();
+  const { isAdFree, isAdReady } = useAdContext();
   const insets = useSafeAreaInsets();
   const [modalConfig, setModalConfig] = React.useState<{
     visible: boolean;
@@ -132,7 +132,7 @@ const PlayerListModal = ({
           className="flex-1"
           contentContainerClassName="pt-2 pb-6"
         >
-          {SHOW_ADS && !isAdFree && (
+          {SHOW_ADS && isAdReady && !isAdFree && (
             <BannerAd
               size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
               unitId={BANNER_AD_UNIT_ID}

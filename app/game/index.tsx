@@ -46,14 +46,21 @@ const getJsonData = <T,>(x: string): T => {
 };
 
 const Game = () => {
-  const { isAdFree } = useAdContext();
+  const { isAdFree, isAdReady } = useAdContext();
   const { data } = useLocalSearchParams();
   const { noRow, playersList, difficulty } = getJsonData<{
     noRow: string;
     playersList: PlayerData[];
     difficulty: AIDifficulty;
   }>(data as string);
-  console.log(noRow, 'noRow', playersList, 'playersList', difficulty, 'difficulty');
+  console.log(
+    noRow,
+    "noRow",
+    playersList,
+    "playersList",
+    difficulty,
+    "difficulty",
+  );
   const [gameState, setGameState] = useState<GameState>(
     createGameState(Number(noRow)),
   );
@@ -266,11 +273,11 @@ const Game = () => {
       />
       <View
         className="flex-1"
-      // style={{ backgroundColor: `${players[currentTurn].color}1d` }}
+        // style={{ backgroundColor: `${players[currentTurn].color}1d` }}
       >
         <SafeAreaView className="flex-1">
           <ScrollView className="flex-1">
-            {SHOW_ADS && !isAdFree && (
+            {SHOW_ADS && isAdReady && !isAdFree && (
               <BannerAd
                 size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
                 unitId={BANNER_AD_UNIT_ID}
@@ -278,9 +285,7 @@ const Game = () => {
             )}
             <View className="flex flex-row items-center justify-end gap-x-[12px] p-4">
               <SOSSoundButton size={28} />
-              <SOSStyledButton
-                onPress={() => setShowPause(true)}
-              >
+              <SOSStyledButton onPress={() => setShowPause(true)}>
                 <Ionicons name="pause" size={28} color="black" />
               </SOSStyledButton>
             </View>
